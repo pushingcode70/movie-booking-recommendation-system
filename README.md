@@ -96,8 +96,8 @@ GORM handles the database migrations when the backend starts.
 
 Clone the repository:
 
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/pushingcode70/movie-booking-recommendation-system.git
+cd movie-booking-recommendation-system
 
 Create the environment file:
 
@@ -124,7 +124,6 @@ cd embedding-service
 
 python3 -m venv venv
 source venv/bin/activate
-
 pip install -r requirements.txt
 python3 main.py
 
@@ -205,24 +204,23 @@ http://localhost:3000/#/admin
 
 ## Running the Project
 
-Terminal 1 — PostgreSQL
+### Terminal 1 — PostgreSQL
 
 Make sure PostgreSQL is running.
 
-Terminal 2 — Embedding Service
+### Terminal 2 — Embedding Service
 
 cd embedding-service
 source venv/bin/activate
 python3 main.py
 
-Terminal 3 — Backend
+### Terminal 3 — Backend
 
 go run main.go
 
-Terminal 4 — Frontend
+### Terminal 4 — Frontend
 
 python3 -m http.server 3000 --directory frontend
-
 ## Local URLs
 
 Frontend    http://localhost:3000
