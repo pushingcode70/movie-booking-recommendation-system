@@ -164,8 +164,6 @@ Store embeddings in pgvector
 
 Existing movies and embeddings are skipped.
 
-The .json.gz export should not be committed to Git.
-
 ## Backend
 
 From the project root:
