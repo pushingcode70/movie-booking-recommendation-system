@@ -30,6 +30,10 @@ __pycache__/
 # Local pgvector Source & Build Directory
 /pgvector/
 
+# Postman
+postman/
+.postman/
+
 # Editor & IDE Directories
 .vscode/
 .idea/
