@@ -89,8 +89,7 @@ GORM handles the database migrations when the backend starts.
 
 Clone the repository:
 
-git clone https://github.com/pushingcode70/movie-booking-recommendation-system.git
-cd movie-booking-recommendation-system
+git clone https://github.com/pushingcode70/movie-booking-recommendation-system.git && cd movie-booking-recommendation-system
 
 Create the environment file:
 
@@ -115,10 +114,7 @@ Setup:
 
 cd embedding-service
 
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 main.py
+python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
 
 Embedding service:
 
