@@ -26,8 +26,6 @@ func NewEmailService() *EmailService {
 	}
 }
 
-// sendTicketEmail generates an html email from a template
-// and sends the movie ticket to the customer
 func (s *EmailService) SendTicketEmail(data dto.TicketEmailData) error {
 
 	// load and parse html email template
@@ -72,7 +70,6 @@ func (s *EmailService) SendTicketEmail(data dto.TicketEmailData) error {
 	return d.DialAndSend(m)
 }
 
-// sendVerificationOTP sends an otp email using an html template
 func (s *EmailService) SendVerificationOTP(data dto.OTPEmailData) error {
 
 	tmpl, err := template.ParseFiles("templates/otp_email.html")

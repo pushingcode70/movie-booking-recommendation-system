@@ -15,7 +15,6 @@ type RazorpayService struct {
 	client *razorpay.Client
 }
 
-// constructor
 func NewRazorpayService() *RazorpayService {
 
 	keyID := config.AppConfig.RazorpayKeyID
@@ -28,7 +27,6 @@ func NewRazorpayService() *RazorpayService {
 	}
 }
 
-// createOrder creates a new razorpay order
 func (s *RazorpayService) CreateOrder(amount float64) (map[string]interface{}, error) {
 
 	amountInPaise := int(amount * 100)
@@ -48,7 +46,6 @@ func (s *RazorpayService) CreateOrder(amount float64) (map[string]interface{}, e
 	return order, nil
 }
 
-// verifyPaymentSignature checks if payment confirmation really came from razorpay
 func (s *RazorpayService) VerifyPaymentSignature(orderID, paymentID, signature string) bool {
 	// razorpay generates the signature using "order_id|payment_id"
 	body := orderID + "|" + paymentID

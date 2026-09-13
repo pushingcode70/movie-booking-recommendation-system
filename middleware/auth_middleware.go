@@ -10,7 +10,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// middleware verifies the jwt sent by the client before allowing access to protected routes
 func AuthMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {

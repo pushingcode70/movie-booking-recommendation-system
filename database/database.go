@@ -13,7 +13,6 @@ import (
 // db is the global database connection used throughout the application
 var DB *gorm.DB
 
-// connectDB establishes a connection to the postgresql database
 func ConnectDB() {
 
 	// build dsn using values loaded from .env

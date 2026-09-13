@@ -16,7 +16,6 @@ type MovieEmbeddingService struct {
 	tmdbService *TMDBService
 }
 
-// constructor
 func NewMovieEmbeddingService(tmdbService *TMDBService) *MovieEmbeddingService {
 	return &MovieEmbeddingService{
 		client:      &http.Client{},
@@ -25,7 +24,6 @@ func NewMovieEmbeddingService(tmdbService *TMDBService) *MovieEmbeddingService {
 	}
 }
 
-// converts a movie's metadata into a single structured text representation for embedding model
 func (s *MovieEmbeddingService) BuildMovieText(movie *TMDBMovie) string {
 
 	var genreNames []string
@@ -90,14 +88,12 @@ func (s *MovieEmbeddingService) GenerateEmbedding(text string) ([]float32, error
 
 }
 
-// build movie represenation and genreates embedding vector and genreate its embedding vector
 func (s *MovieEmbeddingService) CreateMovieEmbedding(movie *TMDBMovie) ([]float32, error) {
 
 	text := s.BuildMovieText(movie)
 	return s.GenerateEmbedding(text)
 }
 
-// fetches movie details from tmdb and generates an embedding for that movie.
 func (s *MovieEmbeddingService) CreateMovieEmbeddingByTMDBID(tmdbID int) ([]float32, error) {
 
 	movie, err := s.tmdbService.GetMovieDetails(tmdbID)

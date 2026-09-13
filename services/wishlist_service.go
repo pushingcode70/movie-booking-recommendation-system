@@ -26,7 +26,6 @@ func NewWishlistService(
 	}
 }
 
-// addMovie adds a movie to the user's wishlist
 func (s *WishlistService) AddMovie(userID uint, req *dto.CreateWishlistRequest) error {
 
 	// already in wishlist?
@@ -59,7 +58,6 @@ func (s *WishlistService) AddMovie(userID uint, req *dto.CreateWishlistRequest) 
 	return s.repo.Create(wishlist)
 }
 
-// getWishlist returns all wishlist entries for a user
 func (s *WishlistService) GetWishlist(userID uint) ([]dto.WishlistItemResponse, error) {
 
 	wishlist, err := s.repo.GetByUserID(userID)
@@ -118,7 +116,6 @@ func (s *WishlistService) GetWishlist(userID uint) ([]dto.WishlistItemResponse, 
 	return response, nil
 }
 
-// removeMovie removes a movie from the wishlist
 func (s *WishlistService) RemoveMovie(userID uint, tmdbID int) error {
 	return s.repo.Delete(userID, tmdbID)
 }
