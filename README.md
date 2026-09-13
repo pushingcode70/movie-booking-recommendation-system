@@ -1,21 +1,15 @@
-# CinePass — Movie Booking System
-
-CinePass is a movie booking application built with Go, PostgreSQL, Python, and a vanilla JavaScript frontend.
+A movie booking platform designed to provide a complete cinema booking experience and movie recommendations.
 
 ## Features
 
 - User registration and login
 - Email OTP verification and password reset
 - Movie browsing and TMDB search
-- Theatre and screen management
-- Automatic seat generation
-- Show scheduling and seat availability
 - Razorpay payments
 - Email ticket generation
 - Wishlist and watched movies
 - Semantic movie recommendations
 - Admin dashboard
-- Postman API collection
 
 ## Tech Stack
 
@@ -53,7 +47,6 @@ CinePass is a movie booking application built with Go, PostgreSQL, Python, and a
 ├── utils/                 # Utility functions
 ├── embedding-service/     # Python embedding service
 ├── frontend/              # Frontend
-├── postman/               # Postman collection
 ├── .env.example
 ├── .gitignore
 ├── go.mod
