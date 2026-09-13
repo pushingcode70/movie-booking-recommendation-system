@@ -121,7 +121,7 @@ Update `.env` with:
 
 The recommendation system uses:
 
-```text
+
 BAAI/bge-base-en-v1.5
 ```
 
@@ -156,28 +156,6 @@ Download the required export and run:
 ```bash
 go run ./cmd/seed /path/to/movie_ids_MM_DD_YYYY.json.gz
 ```
-
-The seed process:
-
-```text
-TMDB daily export
-       ↓
-Read movie IDs
-       ↓
-Select top 20,000 movies by popularity
-       ↓
-Fetch movie details and credits
-       ↓
-Store movies and genres
-       ↓
-Build recommendation text
-       ↓
-Generate embeddings
-       ↓
-Store embeddings in pgvector
-```
-
-Existing movies and embeddings are skipped.
 
 ## Backend
 
