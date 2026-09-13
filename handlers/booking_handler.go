@@ -13,14 +13,12 @@ type BookingHandler struct {
 	service *services.BookingService
 }
 
-// constructor
 func NewBookingHandler(service *services.BookingService) *BookingHandler {
 	return &BookingHandler{
 		service: service,
 	}
 }
 
-// create booking
 func (h *BookingHandler) CreateBooking(c *gin.Context) {
 
 	// dto to receive only fields client is allowed to send
@@ -125,7 +123,6 @@ func (h *BookingHandler) GetBookingsByUserID(c *gin.Context) {
 	c.JSON(http.StatusOK, bookings)
 }
 
-// confirm booking
 func (h *BookingHandler) ConfirmBooking(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -143,7 +140,6 @@ func (h *BookingHandler) ConfirmBooking(c *gin.Context) {
 	})
 }
 
-// cancel booking
 func (h *BookingHandler) CancelBooking(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

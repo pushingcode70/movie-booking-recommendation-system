@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterEmbeddingRoutes registers routes for movie embeddings.
+// registerEmbeddingRoutes registers routes for movie embeddings
 func RegisterEmbeddingRoutes(
 	router *gin.Engine,
 	handler *handlers.EmbeddingHandler,
@@ -16,7 +16,7 @@ func RegisterEmbeddingRoutes(
 	embeddings := router.Group("/embeddings")
 	embeddings.Use(middleware.AuthMiddleware(), middleware.AdminMiddleware())
 	{
-		// Generate and store an embedding for a TMDB movie.
+		// generate and store an embedding for a tmdb movie
 		embeddings.POST("/movie/:tmdbID", handler.GenerateMovieEmbedding)
 	}
 }

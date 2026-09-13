@@ -1,8 +1,8 @@
-/* Explicit Movie Details Controller: Local Movies (#/movies/:id) vs TMDB Movies (#/tmdb/:tmdbId) */
+/* explicit movie details controller: local movies (#/movies/:id) vs tmdb movies (#/tmdb/:tmdbId) */
 
 // -------------------------------------------------------------
-// 1. Local Published Movie Details (#/movies/:id)
-// Uses Local PostgreSQL Primary Key (movies.id)
+// 1. local published movie details (#/movies/:id)
+// uses local postgresql primary key (movies.id)
 // -------------------------------------------------------------
 async function renderLocalMovieDetails(container, params) {
   const localId = Number(params.id);
@@ -11,7 +11,7 @@ async function renderLocalMovieDetails(container, params) {
   container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading movie details...</div>';
 
   try {
-    // Strictly call GET /movies/:id (Local Primary Key)
+    // strictly call get /movies/:id (local primary key)
     const localMovie = await API.get(`/movies/${localId}`);
     if (!localMovie || !localMovie.id) {
       throw new Error('Local movie not found');
@@ -20,14 +20,14 @@ async function renderLocalMovieDetails(container, params) {
     const tmdbId = localMovie.tmdb_id;
     let tmdbMovie = null;
 
-    // Enrich metadata from TMDB if tmdb_id is present
+    // enrich metadata from tmdb if tmdb_id is present
     if (tmdbId) {
       try {
         tmdbMovie = await API.get(`/tmdb/movie/${tmdbId}`);
       } catch (e) {}
     }
 
-    // Extract Director & Cast
+    // extract director & cast
     let director = localMovie.director || '';
     let cast = localMovie.cast || '';
 
@@ -41,7 +41,7 @@ async function renderLocalMovieDetails(container, params) {
       }
     }
 
-    // Consolidated Display Fields
+    // consolidated display fields
     const title = localMovie.title || (tmdbMovie && tmdbMovie.title) || 'Movie Details';
     const overview = localMovie.description || localMovie.overview || (tmdbMovie && tmdbMovie.overview) || 'No overview available.';
     const releaseDate = localMovie.release_date || (tmdbMovie && tmdbMovie.release_date) || '';
@@ -50,7 +50,7 @@ async function renderLocalMovieDetails(container, params) {
     const language = (localMovie.language || (tmdbMovie && tmdbMovie.original_language) || 'EN').toUpperCase();
     const voteAverage = tmdbMovie && tmdbMovie.vote_average ? tmdbMovie.vote_average.toFixed(1) : null;
 
-    // Posters & Backdrops
+    // posters & backdrops
     const rawPoster = localMovie.poster_path || (tmdbMovie && tmdbMovie.poster_path);
     const poster = rawPoster
       ? (rawPoster.startsWith('http') ? rawPoster : `https://image.tmdb.org/t/p/w500${rawPoster}`)
@@ -61,7 +61,7 @@ async function renderLocalMovieDetails(container, params) {
       ? (rawBackdrop.startsWith('http') ? rawBackdrop : `https://image.tmdb.org/t/p/w1280${rawBackdrop}`)
       : null;
 
-    // Genres
+    // genres
     let genres = [];
     if (localMovie.genres && localMovie.genres.length > 0) {
       genres = localMovie.genres;
@@ -69,7 +69,7 @@ async function renderLocalMovieDetails(container, params) {
       genres = tmdbMovie.genres;
     }
 
-    // Wishlist & Watched Status
+    // wishlist & watched status
     let inWishlist = false;
     let watchedItem = null;
 
@@ -86,12 +86,12 @@ async function renderLocalMovieDetails(container, params) {
     }
 
     let inWatched = !!watchedItem;
-    // Strict Mutual Exclusivity: A movie can stay in only ONE list at once
+    // strict mutual exclusivity: a movie can stay in only one list at once
     if (inWatched) {
       inWishlist = false;
     }
 
-    // Fetch Scheduled Shows for this Local Movie (show.movie_id === localMovie.id)
+    // fetch scheduled shows for this local movie
     let shows = [];
     try {
       const allShows = await API.get('/shows');
@@ -129,8 +129,8 @@ async function renderLocalMovieDetails(container, params) {
 }
 
 // -------------------------------------------------------------
-// 2. TMDB External Movie Details (#/tmdb/:tmdbId)
-// Uses External TMDB Movie ID (tmdb_id)
+// 2. tmdb external movie details (#/tmdb/:tmdbId)
+// uses external tmdb movie id (tmdb_id)
 // -------------------------------------------------------------
 async function renderTMDBMovieDetails(container, params) {
   const tmdbId = Number(params.tmdbId);
@@ -139,19 +139,19 @@ async function renderTMDBMovieDetails(container, params) {
   container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading TMDB movie details...</div>';
 
   try {
-    // Strictly call GET /tmdb/movie/:id (External TMDB Endpoint)
+    // strictly call get /tmdb/movie/:id (external tmdb endpoint)
     const tmdbMovie = await API.get(`/tmdb/movie/${tmdbId}`);
     if (!tmdbMovie || !tmdbMovie.id) {
       throw new Error('TMDB movie details not found');
     }
 
-    // Check if this TMDB movie is also published locally (for shows/tickets)
+    // check if this tmdb movie is also published locally (for shows/tickets)
     let localMovie = null;
     try {
       localMovie = await API.get(`/movies/tmdb/${tmdbId}`);
     } catch (e) {}
 
-    // Extract Director & Cast
+    // extract director & cast
     let director = localMovie ? localMovie.director : '';
     let cast = localMovie ? localMovie.cast : '';
 
@@ -185,7 +185,7 @@ async function renderTMDBMovieDetails(container, params) {
 
     const genres = tmdbMovie.genres || (localMovie ? localMovie.genres : []);
 
-    // Wishlist & Watched Status
+    // wishlist & watched status
     let inWishlist = false;
     let watchedItem = null;
 
@@ -202,12 +202,12 @@ async function renderTMDBMovieDetails(container, params) {
     }
 
     let inWatched = !!watchedItem;
-    // Strict Mutual Exclusivity: A movie can stay in only ONE list at once
+    // strict mutual exclusivity: a movie can stay in only one list at once
     if (inWatched) {
       inWishlist = false;
     }
 
-    // Scheduled Shows if movie is published locally
+    // scheduled shows if movie is published locally
     let shows = [];
     if (localMovie && localMovie.id) {
       try {
@@ -244,7 +244,7 @@ async function renderTMDBMovieDetails(container, params) {
   }
 }
 
-// Helper Renderer for both Local & TMDB Movie Details
+// helper renderer for both local & tmdb movie details
 async function renderMovieDetailsView(container, data) {
   const {
     title, overview, releaseDate, releaseYear, runtime, language, voteAverage,
@@ -258,7 +258,7 @@ async function renderMovieDetailsView(container, data) {
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 2rem;">
       
-      <!-- Backdrop Banner -->
+      <!-- backdrop banner -->
       ${backdrop ? `
         <div style="width: 100%; height: 220px; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border-dark);">
           <img src="${backdrop}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);" />
@@ -272,7 +272,7 @@ async function renderMovieDetailsView(container, data) {
         </div>
       ` : ''}
 
-      <!-- Movie Details Card -->
+      <!-- movie details card -->
       <div class="card" style="display: flex; flex-direction: row; gap: 2rem; flex-wrap: wrap;">
         <img src="${poster}" alt="${title}" style="width: 200px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-dark);" />
         
@@ -308,7 +308,7 @@ async function renderMovieDetailsView(container, data) {
                 </button>
               </div>
 
-              <!-- Review / Rating Editor for Watched Movie -->
+              <!-- review / rating editor for watched movie -->
               ${inWatched ? `
                 <div class="card" style="padding: 1rem; background-color: #0a0a0a; border: 1px solid var(--border-dark);">
                   <div style="font-size: 0.84rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Your Rating & Review</div>
@@ -327,7 +327,7 @@ async function renderMovieDetailsView(container, data) {
         </div>
       </div>
 
-      <!-- Scheduled Shows Section -->
+      <!-- scheduled shows section -->
       <div class="card">
         <h2 class="section-title">Scheduled Shows</h2>
         ${shows && shows.length > 0 ? `
@@ -358,7 +358,7 @@ async function renderMovieDetailsView(container, data) {
         ` : '<p style="color: var(--text-muted); font-size: 0.8125rem;">No upcoming showtimes scheduled for this movie.</p>'}
       </div>
 
-      <!-- Similar Movies Shelf -->
+      <!-- similar movies shelf -->
       <div id="similar-movies-section" class="card" style="display: none;">
         <h2 class="section-title">Similar Movies</h2>
         <div id="similar-movies-grid" class="grid"></div>
@@ -367,7 +367,7 @@ async function renderMovieDetailsView(container, data) {
     </div>
   `;
 
-  // Attach Wishlist Listener with Strict Re-Render & Mutual Exclusivity
+  // attach wishlist listener with strict re-render & mutual exclusivity
   const wishlistBtn = document.getElementById('btn-toggle-wishlist');
   if (wishlistBtn && tmdbId) {
     wishlistBtn.addEventListener('click', async () => {
@@ -377,14 +377,14 @@ async function renderMovieDetailsView(container, data) {
         } else {
           await API.post('/wishlist', { tmdb_id: Number(tmdbId) });
         }
-        // Re-render controller to update backend state & enforce single list exclusivity
+        // re-render controller to update backend state & enforce single list exclusivity
         if (data.isLocal) renderLocalMovieDetails(container, { id: data.localId });
         else renderTMDBMovieDetails(container, { tmdbId });
       } catch (err) { alert(err.message || 'Wishlist update failed'); }
     });
   }
 
-  // Attach Watched Listener with Strict Re-Render & Mutual Exclusivity
+  // attach watched listener with strict re-render & mutual exclusivity
   const watchedBtn = document.getElementById('btn-toggle-watched');
   if (watchedBtn && tmdbId) {
     watchedBtn.addEventListener('click', async () => {
@@ -394,14 +394,14 @@ async function renderMovieDetailsView(container, data) {
         } else {
           await API.post('/watched', { tmdb_id: Number(tmdbId) });
         }
-        // Re-render controller to update backend state & enforce single list exclusivity
+        // re-render controller to update backend state & enforce single list exclusivity
         if (data.isLocal) renderLocalMovieDetails(container, { id: data.localId });
         else renderTMDBMovieDetails(container, { tmdbId });
       } catch (err) { alert(err.message || 'Watched update failed'); }
     });
   }
 
-  // Attach Edit Review Listener
+  // attach edit review listener
   const reviewForm = document.getElementById('form-edit-review');
   if (reviewForm && tmdbId) {
     reviewForm.addEventListener('submit', async (e) => {
@@ -422,7 +422,7 @@ async function renderMovieDetailsView(container, data) {
     });
   }
 
-  // Fetch Similar Movies Shelf
+  // fetch similar movies shelf
   if (tmdbId) {
     try {
       const similarSection = document.getElementById('similar-movies-section');
@@ -440,6 +440,6 @@ async function renderMovieDetailsView(container, data) {
   }
 }
 
-// Register Two Explicit, Unambiguous Routes
+// register two explicit, unambiguous routes
 Router.addRoute('#/movies/:id', renderLocalMovieDetails);
 Router.addRoute('#/tmdb/:tmdbId', renderTMDBMovieDetails);

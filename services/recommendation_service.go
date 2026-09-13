@@ -19,7 +19,6 @@ type RecommendationService struct {
 	movieEmbeddingRepo    *repositories.MovieEmbeddingRepository
 }
 
-// constructor
 func NewRecommendationService(
 	userGenreRepo *repositories.UserGenreRepository, wishlistRepo *repositories.WishlistRepository,
 	watchedRepo *repositories.WatchedMovieRepository, movieRepo *repositories.MovieRepository, movieEmbeddingService *MovieEmbeddingService,
@@ -34,26 +33,24 @@ func NewRecommendationService(
 	}
 }
 
-// returns user's fav genres and will be used in based on genres you like in home page
 func (s *RecommendationService) GetFavoriteGenreContext(userID uint) ([]models.Genre, error) {
 	return s.userGenreRepo.GetByUserID(userID)
 }
 
-// return movies from both wish and watchedlist for based on your taste shelf in home page
 func (s *RecommendationService) GetTasteContext(userID uint) (wishlistMovieIDs []int, watchedMovieIDs []int, err error) {
 
-	//get the user's wishlist
+	// get the user's wishlist
 	wishlist, err := s.wishlistRepo.GetByUserID(userID)
 	if err != nil {
 		return nil, nil, err
 	}
-	// Get the user's watched list
+	// get the user's watched list
 	watchedMovies, err := s.watchedRepo.GetByUserID(userID)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	//extract tmdb ids from both lists
+	// extract tmdb ids from both lists
 	wishlistMovieIDs = make([]int, 0, len(wishlist))
 
 	for _, movie := range wishlist {
@@ -69,10 +66,9 @@ func (s *RecommendationService) GetTasteContext(userID uint) (wishlistMovieIDs [
 	return wishlistMovieIDs, watchedMovieIDs, nil
 }
 
-// feteches a movie from tmdb,generates its embedding and stores it using the tmdb id
 func (s *RecommendationService) GenerateAndStoreMovieEmbedding(tmdbID int) error {
 
-	//check if it exists
+	// check if it exists
 	_, err := s.movieEmbeddingRepo.GetByTMDBID(tmdbID)
 
 	if err == nil {
@@ -83,13 +79,13 @@ func (s *RecommendationService) GenerateAndStoreMovieEmbedding(tmdbID int) error
 		return err
 	}
 
-	//if not then create it
+	// if not then create it
 	embedding, err := s.movieEmbeddingService.CreateMovieEmbeddingByTMDBID(tmdbID)
 	if err != nil {
 		return err
 	}
 
-	//create embedding
+	// create embedding
 	movieEmbedding := &models.MovieEmbedding{
 		TMDBID:    tmdbID,
 		Embedding: pgvector.NewVector(embedding),
@@ -98,7 +94,6 @@ func (s *RecommendationService) GenerateAndStoreMovieEmbedding(tmdbID int) error
 	return s.movieEmbeddingRepo.Create(movieEmbedding)
 }
 
-// generate embeddings for user's promt and returns the closest movies from the catalog
 func (s *RecommendationService) GetPromptRecommendations(prompt string, limit int) ([]dto.MovieRecommendation, error) {
 
 	queryText := "Represent this sentence for searching relevant passages: " + prompt
@@ -128,14 +123,13 @@ func (s *RecommendationService) GetPromptRecommendations(prompt string, limit in
 
 }
 
-// returns movies that are semantically similar to the prompt while balancing the selected genres
 func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, genreIDs []int, limit int) ([]models.Movie, error) {
 
 	if prompt == "" || len(genreIDs) == 0 || limit <= 0 {
 		return []models.Movie{}, nil
 	}
 
-	//convert prompt into bge query vector embedding
+	// convert prompt into bge query vector embedding
 	queryText := "Represent this sentence for searching relevant passages: " + prompt
 
 	queryVector, err := s.movieEmbeddingService.GenerateEmbedding(queryText)
@@ -144,8 +138,8 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 		return nil, err
 	}
 
-	//ask pgvector for more movies than we finally need
-	//this gives us enough candidates to balance the selected genres
+	// ask pgvector for more movies than we finally need
+	// this gives us enough candidates to balance the selected genres
 	candidateLimit := limit * 10
 
 	similarMovies, err := s.movieEmbeddingRepo.FindSimilarMovies(
@@ -158,35 +152,35 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 		return nil, err
 	}
 
-	//extract the tmdb ids returned by pgvector
+	// extract the tmdb ids returned by pgvector
 	tmdbIDs := make([]int, 0, len(similarMovies))
 
 	for _, result := range similarMovies {
 		tmdbIDs = append(tmdbIDs, result.TMDBID)
 	}
 
-	//use tmdb ids to get the local movie objects
+	// use tmdb ids to get the local movie objects
 	movies, err := s.movieRepo.GetMoviesByTMDBIDs(tmdbIDs)
 
 	if err != nil {
 		return nil, err
 	}
 
-	//build a lookup table using tmdb id
+	// build a lookup table using tmdb id
 	movieByTMDBID := make(map[int]models.Movie, len(movies))
 
 	for _, movie := range movies {
 		movieByTMDBID[movie.TMDBID] = movie
 	}
 
-	//create a separate candidate list for each selected genre
+	// create a separate candidate list for each selected genre
 	genreMovies := make(map[int][]models.Movie)
 
 	for _, genreID := range genreIDs {
 		genreMovies[genreID] = []models.Movie{}
 	}
 
-	//put each movie into the selected genre lists it belongs to
+	// put each movie into the selected genre lists it belongs to
 	for _, result := range similarMovies {
 
 		movie, exists := movieByTMDBID[result.TMDBID]
@@ -195,7 +189,7 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 			continue
 		}
 
-		//check which selected genres this movie belongs to
+		// check which selected genres this movie belongs to
 		for _, genre := range movie.Genres {
 
 			if _, selected := genreMovies[genre.TMDBID]; selected {
@@ -207,20 +201,20 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 		}
 	}
 
-	//keep the cursor for every genre
+	// keep the cursor for every genre
 	genreIndexes := make(map[int]int)
 
 	for _, genreID := range genreIDs {
 		genreIndexes[genreID] = 0
 	}
 
-	//tracks movies already selected
-	//a movie can belong to multiple genres so this prevents duplicates
+	// tracks movies already selected
+	// a movie can belong to multiple genres so this prevents duplicates
 	used := make(map[uint]bool)
 
 	selected := make([]models.Movie, 0, limit)
 
-	//round robin through selected genres
+	// round robin through selected genres
 	for len(selected) < limit {
 
 		addedThisRound := false
@@ -230,15 +224,15 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 			movies := genreMovies[genreID]
 			index := genreIndexes[genreID]
 
-			//skip movies that were already selected through another genre
+			// skip movies that were already selected through another genre
 			for index < len(movies) && (used[movies[index].ID] || (movies[index].Duration > 0 && movies[index].Duration < 90)) {
 				index++
 			}
 
-			//save the updated position for this genre
+			// save the updated position for this genre
 			genreIndexes[genreID] = index
 
-			//if this genre has no unused candidates left move to the next genre
+			// if this genre has no unused candidates left move to the next genre
 			if index >= len(movies) {
 				continue
 			}
@@ -248,7 +242,7 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 			selected = append(selected, movie)
 			used[movie.ID] = true
 
-			//move this genre's cursor forward for the next round
+			// move this genre's cursor forward for the next round
 			genreIndexes[genreID] = index + 1
 
 			addedThisRound = true
@@ -258,7 +252,7 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 			}
 		}
 
-		//stop if none of the selected genres have available candidates
+		// stop if none of the selected genres have available candidates
 		if !addedThisRound {
 			break
 		}
@@ -267,7 +261,6 @@ func (s *RecommendationService) GetPromptGenreRecommendations(prompt string, gen
 	return selected, nil
 }
 
-// returns movies similar to the selected movies
 func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit int) ([]models.Movie, error) {
 
 	if len(movieIDs) == 0 || limit <= 0 {
@@ -280,7 +273,7 @@ func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit in
 
 	for _, movieID := range movieIDs {
 
-		//get embedding of selected movie
+		// get embedding of selected movie
 		embedding, err := s.movieEmbeddingRepo.GetByTMDBID(movieID)
 
 		if err != nil {
@@ -305,7 +298,7 @@ func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit in
 			}
 		}
 
-		//find movies similar to this selected movie
+		// find movies similar to this selected movie
 		results, err := s.movieEmbeddingRepo.FindSimilarMovies(
 			embedding.Embedding,
 			limit*5,
@@ -320,7 +313,7 @@ func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit in
 		movieIndexes[movieID] = 0
 	}
 
-	//round-robin between selected movies
+	// round-robin between selected movies
 	selectedTMDBIDs := make([]int, 0, limit)
 	used := make(map[int]bool)
 
@@ -362,21 +355,21 @@ func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit in
 		}
 	}
 
-	//fetch actual local movie records
+	// fetch actual local movie records
 	movies, err := s.movieRepo.GetMoviesByTMDBIDs(selectedTMDBIDs)
 
 	if err != nil {
 		return nil, err
 	}
 
-	//create TMDB ID -> Movie lookup
+	// create TMDB ID -> Movie lookup
 	movieByTMDBID := make(map[int]models.Movie, len(movies))
 
 	for _, movie := range movies {
 		movieByTMDBID[movie.TMDBID] = movie
 	}
 
-	//restore recommendation order
+	// restore recommendation order
 	selected := make([]models.Movie, 0, limit)
 
 	for _, tmdbID := range selectedTMDBIDs {
@@ -399,7 +392,7 @@ func (s *RecommendationService) GetMovieRecommendations(movieIDs []int, limit in
 
 func (s *RecommendationService) GetGenreRecommendations(genreIDs []int, limit int) ([]models.Movie, error) {
 
-	if len(genreIDs) == 0 || limit <= 0 { //incase empty limit or no genre at all selcted
+	if len(genreIDs) == 0 || limit <= 0 {
 		return []models.Movie{}, nil
 	}
 
@@ -428,7 +421,7 @@ func (s *RecommendationService) GetGenreRecommendations(genreIDs []int, limit in
 	// tracks movies already selected
 	used := make(map[uint]bool)
 
-	//round robin through selected genres
+	// round robin through selected genres
 	for len(selected) < limit {
 
 		addedThisRound := false

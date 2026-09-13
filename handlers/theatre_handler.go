@@ -16,12 +16,10 @@ type TheatreHandler struct {
 	service *services.TheatreService
 }
 
-// Constructor
 func NewTheatreHandler(service *services.TheatreService) *TheatreHandler {
 	return &TheatreHandler{service: service}
 }
 
-// Create Theatre
 func (h *TheatreHandler) CreateTheatre(c *gin.Context) {
 	var theatre models.Theatre
 
@@ -38,7 +36,6 @@ func (h *TheatreHandler) CreateTheatre(c *gin.Context) {
 	c.JSON(http.StatusCreated, theatre)
 }
 
-// Get Theatre by ID
 func (h *TheatreHandler) GetTheatreByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -68,7 +65,6 @@ func (h *TheatreHandler) GetAllTheatres(c *gin.Context) {
 	c.JSON(http.StatusOK, theatres)
 }
 
-// Update Theatre
 func (h *TheatreHandler) UpdateTheatre(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -93,7 +89,6 @@ func (h *TheatreHandler) UpdateTheatre(c *gin.Context) {
 	c.JSON(http.StatusOK, theatre)
 }
 
-// Delete Theatre
 func (h *TheatreHandler) DeleteTheatre(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -111,11 +106,9 @@ func (h *TheatreHandler) DeleteTheatre(c *gin.Context) {
 	})
 }
 
-// GetTheatreSchedule returns the customer-facing schedule
-// for a theatre on a given date.
 func (h *TheatreHandler) GetTheatreSchedule(c *gin.Context) {
 
-	// Read theatre id from URL.
+	// read theatre id from url
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -124,7 +117,7 @@ func (h *TheatreHandler) GetTheatreSchedule(c *gin.Context) {
 		return
 	}
 
-	// Read date from query parameter.
+	// read date from query parameter
 	date := c.Query("date")
 	if date == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -133,7 +126,7 @@ func (h *TheatreHandler) GetTheatreSchedule(c *gin.Context) {
 		return
 	}
 
-	// Validate date format.
+	// validate date format
 	_, err = time.Parse("2006-01-02", date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -142,7 +135,7 @@ func (h *TheatreHandler) GetTheatreSchedule(c *gin.Context) {
 		return
 	}
 
-	// Fetch theatre schedule.
+	// fetch theatre schedule
 	schedule, err := h.service.GetTheatreSchedule(uint(id), date)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

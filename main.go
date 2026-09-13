@@ -27,13 +27,13 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	//load all  environment variables into appconfig
+	// load all environment variables into appconfig
 	config.LoadConfig()
 
-	// Connect to PostgreSQL
+	// connect to postgresql
 	database.ConnectDB()
 
-	// Auto migrate database tables
+	// auto migrate database tables
 	err = database.DB.AutoMigrate(
 		&models.User{},
 		&models.Movie{},
@@ -56,12 +56,12 @@ func main() {
 
 	log.Println("Database Migrated Successfully!")
 
-	// Movie
+	// movie
 	movieRepo := repositories.NewMovieRepository(database.DB)
 	tmdbService := services.NewTMDBService(movieRepo)
 	movieEmbeddingService := services.NewMovieEmbeddingService(tmdbService)
 	movieEmbeddingRepo := repositories.NewMovieEmbeddingRepository(database.DB)
-	// Sync TMDB genres
+	// sync tmdb genres
 	if err := tmdbService.SyncGenres(); err != nil {
 		log.Printf("Genre synchronization failed: %v", err)
 	}
@@ -69,42 +69,42 @@ func main() {
 	movieService := services.NewMovieService(movieRepo, tmdbService)
 	movieHandler := handlers.NewMovieHandler(movieService)
 
-	// Genre
+	// genre
 	genreRepo := repositories.NewGenreRepository(database.DB)
 	genreService := services.NewGenreService(genreRepo)
 	genreHandler := handlers.NewGenreHandler(genreService)
 
-	// User Genre
+	// user genre
 	userGenreRepo := repositories.NewUserGenreRepository(database.DB)
 	userGenreService := services.NewUserGenreService(userGenreRepo)
 	userGenreHandler := handlers.NewUserGenreHandler(userGenreService)
 
-	// User
+	// user
 	userRepo := repositories.NewUserRepository(database.DB)
 	userService := services.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(userService)
 
-	//email
+	// email
 	emailService := services.NewEmailService()
 
-	// Auth
+	// auth
 	authService := services.NewAuthService(userRepo, emailService)
 	authHandler := handlers.NewAuthHandler(authService)
 
-	// Theatre
+	// theatre
 	theatreRepo := repositories.NewTheatreRepository(database.DB)
 	theatreService := services.NewTheatreService(theatreRepo)
 	theatreHandler := handlers.NewTheatreHandler(theatreService)
 
-	// Screen
+	// screen
 	screenRepo := repositories.NewScreenRepository(database.DB)
 	screenService := services.NewScreenService(screenRepo)
 	screenHandler := handlers.NewScreenHandler(screenService)
 
-	// Show Repository
+	// show repository
 	showRepo := repositories.NewShowRepository(database.DB)
 
-	// Seat
+	// seat
 	seatRepo := repositories.NewSeatRepository(database.DB)
 	seatService := services.NewSeatService(
 		database.DB,
@@ -114,13 +114,13 @@ func main() {
 	)
 	seatHandler := handlers.NewSeatHandler(seatService)
 
-	// Wishlist Repository
+	// wishlist repository
 	wishlistRepo := repositories.NewWishlistRepository(database.DB)
 
-	// Watched Repository
+	// watched repository
 	watchedRepo := repositories.NewWatchedMovieRepository(database.DB)
 
-	// Recommendation
+	// recommendation
 	recommendationService := services.NewRecommendationService(userGenreRepo, wishlistRepo, watchedRepo, movieRepo,
 		movieEmbeddingService, movieEmbeddingRepo)
 	tmdbHandler := handlers.NewTMDBHandler(tmdbService, recommendationService)
@@ -128,7 +128,7 @@ func main() {
 	recommendationHandler := handlers.NewRecommendationHandler(recommendationService)
 	embeddingHandler := handlers.NewEmbeddingHandler(recommendationService)
 
-	// Wishlist
+	// wishlist
 	wishlistService := services.NewWishlistService(
 		wishlistRepo,
 		watchedRepo,
@@ -136,25 +136,25 @@ func main() {
 	)
 	wishlistHandler := handlers.NewWishlistHandler(wishlistService)
 
-	// Watched
+	// watched
 	watchedService := services.NewWatchedMovieService(
 		watchedRepo,
 		wishlistRepo,
 		tmdbService,
 	)
 	watchedHandler := handlers.NewWatchedMovieHandler(watchedService)
-	// Show
+	// show
 	showService := services.NewShowService(showRepo, movieRepo, screenRepo)
 	showHandler := handlers.NewShowHandler(showService)
 
-	// Payment
+	// payment
 	paymentRepo := repositories.NewPaymentRepository(database.DB)
 
-	// Booking
+	// booking
 	bookingRepo := repositories.NewBookingRepository(database.DB)
 	bookingSeatRepo := repositories.NewBookingSeatRepository(database.DB)
 
-	// Razorpay
+	// razorpay
 	razorpayService := services.NewRazorpayService()
 
 	adminRepo := repositories.NewAdminRepository(database.DB)
@@ -189,7 +189,7 @@ func main() {
 	bookingHandler := handlers.NewBookingHandler(bookingService)
 	paymentHandler := handlers.NewPaymentHandler(paymentService)
 
-	// Create Gin router
+	// create gin router
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -213,7 +213,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Register routes
+	// register routes
 	routes.RegisterRoutes(router, movieHandler)
 	routes.RegisterAuthRoutes(router, authHandler, userHandler)
 	routes.RegisterUserRoutes(router, userHandler)
@@ -232,7 +232,7 @@ func main() {
 	routes.RegisterRecommendationRoutes(router, recommendationHandler)
 	routes.RegisterEmbeddingRoutes(router, embeddingHandler)
 
-	// Start server
+	// start server
 	if err := router.Run(":8000"); err != nil {
 		log.Fatal("Failed to start server: ", err)
 	}

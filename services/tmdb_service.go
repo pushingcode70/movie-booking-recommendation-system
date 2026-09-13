@@ -29,7 +29,6 @@ type TMDBService struct {
 	movieRepo *repositories.MovieRepository
 }
 
-// constructor
 func NewTMDBService(movieRepo *repositories.MovieRepository) *TMDBService {
 	return &TMDBService{
 		apiKey: config.AppConfig.TMDBAPIKey,
@@ -46,7 +45,7 @@ func NewTMDBService(movieRepo *repositories.MovieRepository) *TMDBService {
 						KeepAlive: 30 * time.Second,
 					}
 
-					// Force TMDB connections to use IPv4.
+					// force tmdb connections to use ipv4
 					return dialer.DialContext(ctx, "tcp4", address)
 				},
 			},
@@ -63,18 +62,18 @@ type TMDBSearchResponse struct {
 	TotalResults int         `json:"total_results"`
 }
 
-// TMDBGenreResponse represents the response returned by the TMDB movie genre endpoint.
+// tmdbGenreResponse represents response returned by tmdb genre endpoint
 type TMDBGenreResponse struct {
 	Genres []TMDBGenre `json:"genres"`
 }
 
-// TMDBGenre represents a genre returned by TMDB.
+// tmdbGenre represents a genre returned by tmdb
 type TMDBGenre struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
-// TMDBMovie struct representing TMDb movie schema
+// tmdbMovie struct representing tmdb movie schema
 type TMDBMovie struct {
 	ID               int         `json:"id"`
 	Title            string      `json:"title"`
@@ -109,7 +108,6 @@ type CrewMember struct {
 	Job  string `json:"job"`
 }
 
-// searchMovies searches TMDb by movie title.
 func (s *TMDBService) SearchMovies(query string) (*TMDBSearchResponse, error) {
 
 	encodedQuery := url.QueryEscape(query)
@@ -125,23 +123,20 @@ func (s *TMDBService) SearchMovies(query string) (*TMDBSearchResponse, error) {
 		return nil, err
 	}
 
-	// Ensure the response body is closed after we're done reading it
+	// ensure response body is closed after reading
 	defer resp.Body.Close()
 
-	// Create a struct to hold the decoded JSON response
+	// struct to hold decoded json response
 	var result TMDBSearchResponse
 
-	// Decode the JSON response body into the Go struct
+	// decode json response body into go struct
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		// Return if the JSON is invalid or cannot be decoded
 		return nil, err
 	}
 
-	// Return the populated response struct
 	return &result, nil
 }
 
-// get moviedetails returns detailed  information about one movie
 func (s *TMDBService) GetMovieDetails(movieID int) (*TMDBMovie, error) {
 
 	url := fmt.Sprintf(
@@ -167,18 +162,17 @@ func (s *TMDBService) GetMovieDetails(movieID int) (*TMDBMovie, error) {
 	return &movie, nil
 }
 
-// PublishMovie fetches a TMDb movie and saves it to the local database if not present.
 func (s *TMDBService) PublishMovie(tmdbID int) (*models.Movie, error) {
 
-	// Step 1: Check local DB first
+	// check local db first
 	existing, err := s.movieRepo.GetMovieByTMDBID(tmdbID)
 	if err == nil && existing != nil {
-		// If local movie has complete director and cast info, return immediately!
+		// return immediately if complete director and cast info exists
 		if existing.Director != "" && existing.Cast != "" {
 			return existing, nil
 		}
 
-		// If local movie is missing director/cast, fetch from TMDB to fill them in
+		// fetch from tmdb if director/cast missing
 		tmdbMovie, err := s.GetMovieDetails(tmdbID)
 		if err == nil && tmdbMovie != nil {
 			var director string
@@ -214,7 +208,7 @@ func (s *TMDBService) PublishMovie(tmdbID int) (*models.Movie, error) {
 		return nil, err
 	}
 
-	// Step 2: If not in local DB, fetch details from TMDb
+	// fetch details from tmdb if not in local db
 	tmdbMovie, err := s.GetMovieDetails(tmdbID)
 	if err != nil {
 		return nil, err
@@ -275,7 +269,6 @@ func (s *TMDBService) PublishMovie(tmdbID int) (*models.Movie, error) {
 
 }
 
-// fetches official tmdb movie genres and stores any genres that are not already present in database
 func (s *TMDBService) SyncGenres() error {
 
 	url := fmt.Sprintf(
@@ -323,7 +316,6 @@ func (s *TMDBService) SyncGenres() error {
 	return nil
 }
 
-// get performs a GET request with retries for transient network/API failures.
 func (s *TMDBService) get(url string) (*http.Response, error) {
 
 	const maxRetries = 3
@@ -336,7 +328,7 @@ func (s *TMDBService) get(url string) (*http.Response, error) {
 		if attempt > 0 {
 			delay := baseDelay * time.Duration(1<<(attempt-1))
 
-			// Add jitter so repeated retries are not synchronized.
+			// add jitter so repeated retries are not synchronized
 			jitter := time.Duration(rand.Int63n(int64(delay)))
 
 			time.Sleep(delay + jitter)
@@ -346,7 +338,7 @@ func (s *TMDBService) get(url string) (*http.Response, error) {
 
 		if err != nil {
 
-			// Retry transient network failures such as connection resets.
+			// retry transient network failures such as connection resets
 			var netErr net.Error
 			if errors.As(err, &netErr) && netErr.Timeout() {
 				lastErr = err
@@ -367,7 +359,7 @@ func (s *TMDBService) get(url string) (*http.Response, error) {
 			return nil, err
 		}
 
-		// Retry temporary server/rate-limit responses.
+		// retry temporary server/rate-limit responses
 		if resp.StatusCode == http.StatusTooManyRequests ||
 			resp.StatusCode >= 500 {
 

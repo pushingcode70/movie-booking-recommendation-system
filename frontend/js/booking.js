@@ -1,6 +1,6 @@
-/* Seat Grid & Booking Summary Module (Matching Requested Design) */
+/* seat grid & booking summary module */
 
-let selectedSeatsList = []; // Objects: { id, row, number, seatNumber }
+let selectedSeatsList = []; // objects: { id, row, number, seatNumber }
 
 async function renderSeatLayout(container, params) {
   const showId = params.showId;
@@ -14,7 +14,7 @@ async function renderSeatLayout(container, params) {
   try {
     const show = await API.get(`/shows/${showId}`);
 
-    // Resolve movie details: check preloaded show.movie first, then fall back to local/TMDB lookup
+    // resolve movie details: check preloaded show.movie first, then fall back to local/tmdb lookup
     let movie = (show && show.movie && show.movie.title) ? show.movie : null;
     if (!movie) {
       const movies = (await API.get('/movies')) || [];
@@ -40,7 +40,7 @@ async function renderSeatLayout(container, params) {
     try {
       const seatRes = await API.get(`/shows/${showId}/seats`);
       if (seatRes && seatRes.rows) {
-        // Flat array of seats from ShowSeatLayoutResponse DTO
+        // flat array of seats from show seat layout response dto
         seatRes.rows.forEach(r => {
           (r.seats || []).forEach(s => {
             seats.push({
@@ -55,7 +55,7 @@ async function renderSeatLayout(container, params) {
       }
     } catch (e) {}
 
-    // Fallback: If database has no generated seats yet, generate dynamically from screen.total_seats
+    // fallback: if database has no generated seats yet, generate dynamically from screen.total_seats
     const totalSeatsCount = screen.total_seats || screen.capacity || 60;
     if (seats.length === 0) {
       const seatsPerRow = totalSeatsCount > 50 ? 15 : 10;
@@ -63,7 +63,7 @@ async function renderSeatLayout(container, params) {
       let seatCounter = 1;
 
       for (let r = 0; r < rowCount; r++) {
-        const rowLetter = String.fromCharCode(65 + r); // A, B, C...
+        const rowLetter = String.fromCharCode(65 + r); // a, b, c...
         for (let s = 1; s <= seatsPerRow; s++) {
           if (seatCounter > totalSeatsCount) break;
           seats.push({
@@ -80,7 +80,7 @@ async function renderSeatLayout(container, params) {
 
     selectedSeatsList = [];
 
-    // Group seats by row
+    // group seats by row
     const rowMap = {};
     seats.forEach(s => {
       if (!rowMap[s.row]) rowMap[s.row] = [];
@@ -97,22 +97,22 @@ async function renderSeatLayout(container, params) {
           &larr; Back to Showtimes
         </a>
 
-        <!-- Main Layout: Seat Map on Left (70%), Booking Summary on Right (30%) -->
+        <!-- main layout: seat map on left (70%), booking summary on right (30%) -->
         <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
           
-          <!-- LEFT SIDE: Seat Map Area -->
+          <!-- left side: seat map area -->
           <div style="flex: 2; min-width: 320px; background-color: #0f0f0f; border: 1px solid var(--border-dark); border-radius: 12px; padding: 2rem; text-align: center;">
             
             <div style="font-size: 0.7rem; font-weight: 800; color: #ef4444; letter-spacing: 1px; text-transform: uppercase;">SCREEN SELECTION</div>
             <h2 style="font-size: 1.5rem; font-weight: 900; color: #ffffff; margin-bottom: 1.5rem;">${screenName}</h2>
 
-            <!-- Screen Bar Curved Display (Matching 3rd Screenshot) -->
+            <!-- screen bar curved display -->
             <div style="margin: 0 auto 2rem auto; max-width: 450px;">
               <div style="height: 6px; background: linear-gradient(90deg, transparent, #ef4444, transparent); border-radius: 50%; box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);"></div>
               <div style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.5rem;">ALL EYES THIS WAY</div>
             </div>
 
-            <!-- Legend (Matching 3rd Screenshot) -->
+            <!-- legend -->
             <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; font-size: 0.75rem; color: var(--text-muted);">
               <div style="display: flex; align-items: center; gap: 0.4rem;">
                 <div style="width: 14px; height: 14px; background-color: #262626; border-radius: 3px; border: 1px solid #404040;"></div> Available
@@ -125,7 +125,7 @@ async function renderSeatLayout(container, params) {
               </div>
             </div>
 
-            <!-- Interactive Seat Grid Container (Matching 3rd Screenshot) -->
+            <!-- interactive seat grid container -->
             <div id="seat-layout-grid" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; overflow-x: auto; padding-bottom: 1rem;">
               ${Object.keys(rowMap).sort().map(row => `
                 <div style="display: flex; gap: 0.4rem; align-items: center;">
@@ -160,7 +160,7 @@ async function renderSeatLayout(container, params) {
 
           </div>
 
-          <!-- RIGHT SIDEBAR: Booking Summary (Matching 3rd Screenshot) -->
+          <!-- right sidebar: booking summary -->
           <div style="flex: 1; min-width: 300px; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.5rem;">
             
             <div style="display: flex; items-center; gap: 0.5rem; margin-bottom: 1.25rem;">
@@ -196,7 +196,7 @@ async function renderSeatLayout(container, params) {
 
             <hr style="border-color: var(--border-dark); margin-bottom: 1.25rem;" />
 
-            <!-- Price Breakdown -->
+            <!-- price breakdown -->
             <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8125rem; margin-bottom: 1.5rem;">
               <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
                 <span>Ticket Price</span>
@@ -212,7 +212,7 @@ async function renderSeatLayout(container, params) {
               </div>
             </div>
 
-            <!-- Submit Booking Button -->
+            <!-- submit booking button -->
             <button id="btn-create-booking" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 0.95rem; font-weight: 800;" disabled>
               Book & Pay Rs. 0.00
             </button>
@@ -224,7 +224,7 @@ async function renderSeatLayout(container, params) {
       </div>
     `;
 
-    // Interactive Seat Click Event Handler
+    // interactive seat click event handler
     const grid = document.getElementById('seat-layout-grid');
     const seatsPillsEl = document.getElementById('summary-seats-pills');
     const ticketPriceEl = document.getElementById('summary-ticket-price');
@@ -249,7 +249,7 @@ async function renderSeatLayout(container, params) {
         cell.style.borderColor = '#ef4444';
       }
 
-      // Update Right Sidebar Summary
+      // update right sidebar summary
       const count = selectedSeatsList.length;
       const total = count * show.price;
 
@@ -272,7 +272,7 @@ async function renderSeatLayout(container, params) {
       }
     });
 
-    // Handle Create Booking & Payment
+    // handle create booking & payment
     bookBtn.addEventListener('click', async () => {
       const seatIds = selectedSeatsList.map(s => s.id);
       try {

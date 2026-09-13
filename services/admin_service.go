@@ -19,13 +19,10 @@ func (s *AdminService) GetDashboardStats() (*dto.DashboardResponse, error) {
 	return s.repo.GetDashboardStats()
 }
 
-// GetRecentPayments returns all payments, optionally filtered by a date (YYYY-MM-DD).
 func (s *AdminService) GetRecentPayments(date string) ([]dto.AdminRecentPaymentResponse, error) {
 	return s.repo.GetRecentPayments(date)
 }
 
-// GetRecentBookings returns bookings optionally filtered by date (YYYY-MM-DD).
-// An empty string returns all bookings.
 func (s *AdminService) GetRecentBookings(date string) ([]dto.AdminRecentBookingResponse, error) {
 	return s.repo.GetRecentBookings(date)
 }

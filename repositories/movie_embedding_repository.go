@@ -24,12 +24,12 @@ func NewMovieEmbeddingRepository(db *gorm.DB) *MovieEmbeddingRepository {
 	}
 }
 
-// Create stores a new movie embedding.
+// create stores a new movie embedding
 func (r *MovieEmbeddingRepository) Create(embedding *models.MovieEmbedding) error {
 	return r.db.Create(embedding).Error
 }
 
-// GetByTMDBID returns the embedding for a TMDB movie.
+// getByTMDBID returns the embedding for a tmdb movie
 func (r *MovieEmbeddingRepository) GetByTMDBID(tmdbID int) (*models.MovieEmbedding, error) {
 	var embedding models.MovieEmbedding
 
@@ -44,8 +44,7 @@ func (r *MovieEmbeddingRepository) GetByTMDBID(tmdbID int) (*models.MovieEmbeddi
 	return &embedding, nil
 }
 
-// FindSimilarMovies returns movies whose embeddings are closest
-// to the supplied query vector using cosine distance.
+// findSimilarMovies returns movies whose embeddings are closest to query vector
 func (r *MovieEmbeddingRepository) FindSimilarMovies(
 	queryVector pgvector.Vector,
 	limit int,

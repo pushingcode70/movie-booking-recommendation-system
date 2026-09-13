@@ -9,11 +9,11 @@ import (
 
 func RegisterScreenRoutes(router *gin.Engine, screenHandler *handlers.ScreenHandler) {
 
-	// Public routes
+	// public routes
 	router.GET("/screens", screenHandler.GetAllScreens)
 	router.GET("/screens/:id", screenHandler.GetScreenByID)
 
-	// Protected routes
+	// protected routes
 	screens := router.Group("/screens")
 	screens.Use(middleware.AuthMiddleware(),
 		middleware.AdminMiddleware())

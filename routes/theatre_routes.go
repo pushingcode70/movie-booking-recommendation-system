@@ -9,12 +9,12 @@ import (
 
 func RegisterTheatreRoutes(router *gin.Engine, theatreHandler *handlers.TheatreHandler) {
 
-	// Public routes
+	// public routes
 	router.GET("/theatres", theatreHandler.GetAllTheatres)
 	router.GET("/theatres/:id", theatreHandler.GetTheatreByID)
 	router.GET("/theatres/:id/schedule", theatreHandler.GetTheatreSchedule)
 
-	// Protected routes
+	// protected routes
 	theatres := router.Group("/theatres")
 	theatres.Use(middleware.AuthMiddleware(),
 		middleware.AdminMiddleware())

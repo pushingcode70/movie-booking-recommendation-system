@@ -32,7 +32,6 @@ func (h *AdminHandler) GetDashboardStats(c *gin.Context) {
 	c.JSON(http.StatusOK, stats)
 }
 
-// GetRecentPayments returns all payments, optionally filtered by ?date=YYYY-MM-DD
 func (h *AdminHandler) GetRecentPayments(c *gin.Context) {
 	date := c.Query("date") // optional, e.g. ?date=2026-07-26
 
@@ -47,10 +46,8 @@ func (h *AdminHandler) GetRecentPayments(c *gin.Context) {
 	c.JSON(http.StatusOK, payments)
 }
 
-// GetRecentBookings returns bookings for the admin dashboard,
-// optionally filtered by ?date=YYYY-MM-DD. Without a date it returns all bookings.
 func (h *AdminHandler) GetRecentBookings(c *gin.Context) {
-	date := c.Query("date") // optional — e.g. ?date=2026-07-28
+	date := c.Query("date")
 
 	bookings, err := h.service.GetRecentBookings(date)
 	if err != nil {
@@ -63,7 +60,6 @@ func (h *AdminHandler) GetRecentBookings(c *gin.Context) {
 	c.JSON(http.StatusOK, bookings)
 }
 
-// GetRunningShows returns all currently running shows.
 func (h *AdminHandler) GetRunningShows(c *gin.Context) {
 
 	shows, err := h.service.GetRunningShows()

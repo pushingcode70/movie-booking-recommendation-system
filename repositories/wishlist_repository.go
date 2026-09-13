@@ -16,12 +16,12 @@ func NewWishlistRepository(db *gorm.DB) *WishlistRepository {
 	}
 }
 
-// Create adds a movie to the user's wishlist.
+// create adds a movie to the user's wishlist
 func (r *WishlistRepository) Create(wishlist *models.Wishlist) error {
 	return r.db.Create(wishlist).Error
 }
 
-// GetByUserID returns all wishlist entries for a user.
+// getByUserID returns all wishlist entries for a user
 func (r *WishlistRepository) GetByUserID(userID uint) ([]models.Wishlist, error) {
 	var wishlist []models.Wishlist
 

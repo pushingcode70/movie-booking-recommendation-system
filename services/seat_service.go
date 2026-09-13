@@ -19,7 +19,6 @@ type SeatService struct {
 	db         *gorm.DB
 }
 
-// Constructor
 func NewSeatService(
 	db *gorm.DB,
 	seatRepo *repositories.SeatRepository,
@@ -34,41 +33,35 @@ func NewSeatService(
 	}
 }
 
-// Create Seat
 func (s *SeatService) CreateSeat(seat *models.Seat) error {
 	return s.seatRepo.CreateSeat(seat)
 }
 
-// Get Seat by ID
 func (s *SeatService) GetSeatByID(id uint) (*models.Seat, error) {
 	return s.seatRepo.GetSeatByID(id)
 }
 
-// Get All Seats
 func (s *SeatService) GetAllSeats() ([]models.Seat, error) {
 	return s.seatRepo.GetAllSeats()
 }
 
-// Update Seat
 func (s *SeatService) UpdateSeat(seat *models.Seat) error {
 	return s.seatRepo.UpdateSeat(seat)
 }
 
-// Delete Seat
 func (s *SeatService) DeleteSeat(id uint) error {
 	return s.seatRepo.DeleteSeat(id)
 }
 
-// GetShowSeatLayout returns the seat layout for a show.
 func (s *SeatService) GetShowSeatLayout(showID uint) (*dto.ShowSeatLayoutResponse, error) {
 
-	// Get flat seat data from the repository.
+	// get flat seat data from repository
 	rows, err := s.seatRepo.GetShowSeatLayout(showID)
 	if err != nil {
 		return nil, err
 	}
 
-	// No seats found.
+	// no seats found
 	if len(rows) == 0 {
 		return nil, nil
 	}
@@ -80,18 +73,17 @@ func (s *SeatService) GetShowSeatLayout(showID uint) (*dto.ShowSeatLayoutRespons
 		ScreenNumber: rows[0].ScreenNumber,
 	}
 
-	// Map row label ("A", "B", etc.) to its position in response.Rows.
+	// map row label to position in response.Rows
 	rowIndex := make(map[string]int)
 
 	for _, seat := range rows {
 
-		// Extract row label from seat number.
-		// Example: "A12" -> "A"
+		// extract row label from seat number
 		row := strings.ToUpper(string(seat.SeatNumber[0]))
 
 		index, exists := rowIndex[row]
 
-		// Create a new row group if it doesn't exist.
+		// create a new row group if it doesn't exist
 		if !exists {
 			response.Rows = append(response.Rows, dto.SeatRowGroup{
 				Row:   row,
@@ -160,7 +152,7 @@ func (s *SeatService) GenerateSeats(
 
 	for row := 0; row < req.Rows; row++ {
 
-		// Convert 0 -> A, 1 -> B, ...
+		// convert index to row letter (0 -> A, 1 -> B, ...)
 		rowLetter := string(rune('A' + row))
 
 		for seat := 1; seat <= req.SeatsPerRow; seat++ {

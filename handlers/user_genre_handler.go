@@ -20,7 +20,7 @@ func NewUserGenreHandler(service *services.UserGenreService) *UserGenreHandler {
 	}
 }
 
-// GetFavoriteGenres returns the authenticated user's favorite genres.
+// getFavoriteGenres returns the authenticated user's favorite genres
 func (h *UserGenreHandler) GetFavoriteGenres(c *gin.Context) {
 
 	userID := c.MustGet("user_id").(uint)
@@ -36,7 +36,7 @@ func (h *UserGenreHandler) GetFavoriteGenres(c *gin.Context) {
 	c.JSON(http.StatusOK, genres)
 }
 
-// AddFavoriteGenre adds a genre to the authenticated user's favorite genres.
+// addFavoriteGenre adds a genre to the authenticated user's favorite genres
 func (h *UserGenreHandler) AddFavoriteGenre(c *gin.Context) {
 
 	userID := c.MustGet("user_id").(uint)
@@ -62,7 +62,7 @@ func (h *UserGenreHandler) AddFavoriteGenre(c *gin.Context) {
 	})
 }
 
-// RemoveFavoriteGenre removes a genre from the authenticated user's favorites.
+// removeFavoriteGenre removes a genre from the authenticated user's favorites
 func (h *UserGenreHandler) RemoveFavoriteGenre(c *gin.Context) {
 
 	userID := c.MustGet("user_id").(uint)

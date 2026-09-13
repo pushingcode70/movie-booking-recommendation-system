@@ -26,10 +26,10 @@ func NewWishlistService(
 	}
 }
 
-// AddMovie adds a movie to the user's wishlist.
+// addMovie adds a movie to the user's wishlist
 func (s *WishlistService) AddMovie(userID uint, req *dto.CreateWishlistRequest) error {
 
-	// Already in wishlist?
+	// already in wishlist?
 	exists, err := s.repo.Exists(userID, req.TMDBID)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (s *WishlistService) AddMovie(userID uint, req *dto.CreateWishlistRequest) 
 		return errors.New("movie already exists in wishlist")
 	}
 
-	// Check if already watched
+	// check if already watched
 	watched, err := s.watchedRepo.Exists(userID, req.TMDBID)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (s *WishlistService) AddMovie(userID uint, req *dto.CreateWishlistRequest) 
 	return s.repo.Create(wishlist)
 }
 
-// GetWishlist returns all wishlist entries for a user.
+// getWishlist returns all wishlist entries for a user
 func (s *WishlistService) GetWishlist(userID uint) ([]dto.WishlistItemResponse, error) {
 
 	wishlist, err := s.repo.GetByUserID(userID)
@@ -88,10 +88,10 @@ func (s *WishlistService) GetWishlist(userID uint) ([]dto.WishlistItemResponse, 
 			Director:     "",
 			Cast:         "",
 		}
-		// Set dynamic ID to TMDb ID
+		// set dynamic id to tmdb id
 		movieModel.ID = uint(movie.ID)
 
-		// Parse director & cast if credits exist
+		// parse director & cast if credits exist
 		if movie.Credits != nil {
 			for _, member := range movie.Credits.Crew {
 				if member.Job == "Director" {
@@ -118,7 +118,7 @@ func (s *WishlistService) GetWishlist(userID uint) ([]dto.WishlistItemResponse, 
 	return response, nil
 }
 
-// RemoveMovie removes a movie from the wishlist.
+// removeMovie removes a movie from the wishlist
 func (s *WishlistService) RemoveMovie(userID uint, tmdbID int) error {
 	return s.repo.Delete(userID, tmdbID)
 }

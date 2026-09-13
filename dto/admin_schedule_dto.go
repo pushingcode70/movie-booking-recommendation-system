@@ -2,7 +2,7 @@ package dto
 
 import "time"
 
-// Represents one scheduled show in a theatre.
+// represents one scheduled show in a theatre
 type AdminScheduleResponse struct {
 	ShowID       uint      `json:"show_id"`
 	MovieID      uint      `json:"movie_id"`

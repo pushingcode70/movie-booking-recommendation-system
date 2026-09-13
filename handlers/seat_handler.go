@@ -16,12 +16,10 @@ type SeatHandler struct {
 	service *services.SeatService
 }
 
-// Constructor
 func NewSeatHandler(service *services.SeatService) *SeatHandler {
 	return &SeatHandler{service: service}
 }
 
-// Create Seat
 func (h *SeatHandler) CreateSeat(c *gin.Context) {
 	var seat models.Seat
 
@@ -38,7 +36,6 @@ func (h *SeatHandler) CreateSeat(c *gin.Context) {
 	c.JSON(http.StatusCreated, seat)
 }
 
-// Get Seat by ID
 func (h *SeatHandler) GetSeatByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -55,7 +52,6 @@ func (h *SeatHandler) GetSeatByID(c *gin.Context) {
 	c.JSON(http.StatusOK, seat)
 }
 
-// Get All Seats
 func (h *SeatHandler) GetAllSeats(c *gin.Context) {
 	seats, err := h.service.GetAllSeats()
 	if err != nil {
@@ -66,7 +62,6 @@ func (h *SeatHandler) GetAllSeats(c *gin.Context) {
 	c.JSON(http.StatusOK, seats)
 }
 
-// Update Seat
 func (h *SeatHandler) UpdateSeat(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -91,7 +86,6 @@ func (h *SeatHandler) UpdateSeat(c *gin.Context) {
 	c.JSON(http.StatusOK, seat)
 }
 
-// Delete Seat
 func (h *SeatHandler) DeleteSeat(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -107,10 +101,9 @@ func (h *SeatHandler) DeleteSeat(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Seat deleted successfully"})
 }
 
-// GetShowSeatLayout returns the seat layout for a show.
 func (h *SeatHandler) GetShowSeatLayout(c *gin.Context) {
 
-	// Read show ID from URL.
+	// read show ID from URL
 	showID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -119,7 +112,7 @@ func (h *SeatHandler) GetShowSeatLayout(c *gin.Context) {
 		return
 	}
 
-	// Call service.
+	// call service
 	layout, err := h.service.GetShowSeatLayout(uint(showID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -128,7 +121,7 @@ func (h *SeatHandler) GetShowSeatLayout(c *gin.Context) {
 		return
 	}
 
-	// No show or no seats found.
+	// no show or no seats found
 	if layout == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Show not found",
@@ -139,10 +132,9 @@ func (h *SeatHandler) GetShowSeatLayout(c *gin.Context) {
 	c.JSON(http.StatusOK, layout)
 }
 
-// GenerateSeats creates a seat layout for a screen.
 func (h *SeatHandler) GenerateSeats(c *gin.Context) {
 
-	// Get screen ID from URL.
+	// get screen ID from URL
 	screenID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -151,7 +143,7 @@ func (h *SeatHandler) GenerateSeats(c *gin.Context) {
 		return
 	}
 
-	// Read request body.
+	// read request body
 	var req dto.GenerateSeatsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -160,7 +152,7 @@ func (h *SeatHandler) GenerateSeats(c *gin.Context) {
 		return
 	}
 
-	// Generate the seat layout.
+	// generate seat layout
 	err = h.service.GenerateSeats(uint(screenID), req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

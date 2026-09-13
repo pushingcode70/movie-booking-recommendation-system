@@ -9,24 +9,20 @@ type UserService struct {
 	repo *repositories.UserRepository
 }
 
-// Constructor
 func NewUserService(repo *repositories.UserRepository) *UserService {
 	return &UserService{
 		repo: repo,
 	}
 }
 
-// Get user by ID
 func (s *UserService) GetUserByID(id uint) (*models.User, error) {
 	return s.repo.GetUserByID(id)
 }
 
-// Get user by email
 func (s *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return s.repo.GetUserByEmail(email)
 }
 
-// Update user
 func (s *UserService) UpdateUser(user *models.User) error {
 	return s.repo.UpdateUser(user)
 }

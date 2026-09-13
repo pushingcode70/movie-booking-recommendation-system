@@ -14,7 +14,6 @@ type TMDBHandler struct {
 	recommendationService *services.RecommendationService
 }
 
-// constructor
 func NewTMDBHandler(service *services.TMDBService, recommendationService *services.RecommendationService) *TMDBHandler {
 	return &TMDBHandler{
 		service:               service,
@@ -22,14 +21,12 @@ func NewTMDBHandler(service *services.TMDBService, recommendationService *servic
 	}
 }
 
-// searchMovies searches TMDb by movie title.
-// example:GET /tmdb/search?query=interstellar
 func (h *TMDBHandler) SearchMovies(c *gin.Context) {
 
-	//get movie title from query parameter
+	// get movie title from query parameter
 	query := c.Query("query")
 
-	//validate that a search a search query is validated
+	// validate search query parameter
 	if query == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "query parameter is required",
@@ -37,7 +34,7 @@ func (h *TMDBHandler) SearchMovies(c *gin.Context) {
 		return
 	}
 
-	//call the service to search movies on TMDB
+	// call service to search movies on tmdb
 	result, err := h.service.SearchMovies(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -46,16 +43,14 @@ func (h *TMDBHandler) SearchMovies(c *gin.Context) {
 		return
 	}
 
-	// Return the search results as JSON
+	// return search results as json
 	c.JSON(http.StatusOK, result)
 }
 
-// getMovieDetails returns details of a single TMDb movie.
-// example:GET /tmdb/movie/157336
 func (h *TMDBHandler) GetMovieDetails(c *gin.Context) {
 
-	// Convert the movie ID from the URL into an integer
-	id, err := strconv.Atoi(c.Param("id")) //atoi converts string to int
+	// convert movie id from url to integer
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid movie id",
@@ -63,7 +58,7 @@ func (h *TMDBHandler) GetMovieDetails(c *gin.Context) {
 		return
 	}
 
-	// Fetch movie details from the service
+	// fetch movie details from service
 	movie, err := h.service.GetMovieDetails(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -72,14 +67,13 @@ func (h *TMDBHandler) GetMovieDetails(c *gin.Context) {
 		return
 	}
 
-	// Return the movie details as JSON
+	// return movie details as json
 	c.JSON(http.StatusOK, movie)
 }
 
-// publish a tmdb movie to local database
 func (h *TMDBHandler) PublishMovie(c *gin.Context) {
 
-	// get tmdb movie id from URL
+	// get tmdb movie id from url
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -88,7 +82,7 @@ func (h *TMDBHandler) PublishMovie(c *gin.Context) {
 		return
 	}
 
-	//publish the movie
+	// publish the movie
 	movie, err := h.service.PublishMovie(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -106,6 +100,6 @@ func (h *TMDBHandler) PublishMovie(c *gin.Context) {
 		return
 	}
 
-	// return the published movie
+	// return published movie
 	c.JSON(http.StatusCreated, movie)
 }

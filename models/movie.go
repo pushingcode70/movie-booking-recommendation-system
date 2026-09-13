@@ -1,19 +1,16 @@
 package models
 
-// Genre represents a movie genre provided by TMDB.
-//
-// TMDBID is kept so that the local genre can be matched with
-// TMDB's genre identifier when movie metadata is synchronized.
+// genre represents a movie genre provided by tmdb
 type Genre struct {
 	ID     uint   `gorm:"primaryKey" json:"id"`
 	TMDBID int    `gorm:"uniqueIndex;not null" json:"tmdb_id"`
 	Name   string `gorm:"not null" json:"name"`
 }
 
-// Movie represents a movie stored in the local database.
+// movie represents a movie stored in the local database
 type Movie struct {
 	ID     uint `gorm:"primaryKey" json:"id"`
-	TMDBID int  `gorm:"uniqueIndex" json:"tmdb_id"` // TMDb movie ID
+	TMDBID int  `gorm:"uniqueIndex" json:"tmdb_id"` // tmdb movie id
 
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -27,8 +24,6 @@ type Movie struct {
 	Director string `json:"director"`
 	Cast     string `json:"cast"`
 
-	// A movie can have multiple genres, and a genre can belong
-	// to multiple movies. GORM manages this relationship through
-	// the movie_genres join table.
+	// a movie can have multiple genres and a genre can belong to multiple movies
 	Genres []Genre `gorm:"many2many:movie_genres;" json:"genres"`
 }

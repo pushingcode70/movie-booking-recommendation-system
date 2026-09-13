@@ -1,4 +1,4 @@
-/* Hash-based SPA Router & Global Search Navigation Controller */
+/* hash-based spa router & global search navigation controller */
 const Router = {
   routes: {},
 
@@ -38,7 +38,7 @@ const Router = {
 
       debounceTimer = setTimeout(async () => {
         try {
-          // Call existing backend TMDB search endpoint: GET /tmdb/search?query=...
+          // call existing backend tmdb search endpoint
           const res = await API.get(`/tmdb/search?query=${encodeURIComponent(query)}`);
           const results = (res && res.results) ? res.results : [];
 
@@ -75,7 +75,7 @@ const Router = {
       }, 300);
     });
 
-    // Handle Item Selection
+    // handle item selection
     dropdown.addEventListener('click', (e) => {
       const item = e.target.closest('.search-dropdown-item');
       if (!item) return;
@@ -85,7 +85,7 @@ const Router = {
       window.location.hash = `#/tmdb/${tmdbId}`;
     });
 
-    // Hide dropdown on outside click
+    // hide dropdown on outside click
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.global-search-container')) {
         dropdown.style.display = 'none';
@@ -106,13 +106,13 @@ const Router = {
     const container = document.getElementById('app');
     if (!container) return;
 
-    // Match exact route (using hashPath stripped of query string parameters)
+    // match exact route (using hashPath stripped of query string parameters)
     if (this.routes[hashPath]) {
       this.routes[hashPath](container);
       return;
     }
 
-    // Match parameterized routes (e.g., #/movies/:id, #/book/:showId, #/bookings/confirm/:id)
+    // match parameterized routes (e.g., #/movies/:id, #/book/:showId, #/bookings/confirm/:id)
     for (const routePath in this.routes) {
       if (routePath.includes(':')) {
         const routeParts = routePath.split('/');
@@ -140,7 +140,7 @@ const Router = {
       }
     }
 
-    // 404 Fallback
+    // 404 fallback
     container.innerHTML = `
       <div class="card" style="text-align: center; padding: 3rem; max-width: 500px; margin: 2rem auto;">
         <h1 style="color: var(--brand-primary); font-size: 2rem; font-weight: 800;">404</h1>

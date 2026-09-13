@@ -1,6 +1,6 @@
 package dto
 
-// Final response returned to the customer.
+// final response returned to the customer
 type ShowSeatLayoutResponse struct {
 	ShowID       uint           `json:"show_id"`
 	MovieTitle   string         `json:"movie_title"`
@@ -9,7 +9,7 @@ type ShowSeatLayoutResponse struct {
 	Rows         []SeatRowGroup `json:"rows"`
 }
 
-// Represents one row (A, B, C...)
+// represents one row (a, b, c...)
 type SeatRowGroup struct {
 	Row   string     `json:"row"`
 	Seats []SeatInfo `json:"seats"`

@@ -1,4 +1,4 @@
-/* Theatres & Shows Controller */
+/* theatres & shows controller */
 
 async function renderTheatres(container, params) {
   const theatreId = params ? params.id : null;
@@ -47,7 +47,7 @@ async function renderTheatres(container, params) {
       </div>
     `;
 
-    // Click listener to select theatre
+    // click listener to select theatre
     container.querySelectorAll('.theatre-card-item').forEach(card => {
       card.addEventListener('click', () => {
         const id = card.dataset.id;
@@ -60,7 +60,7 @@ async function renderTheatres(container, params) {
   }
 }
 
-/* Render Theatre Showtimes Page */
+/* render theatre showtimes page */
 async function renderTheatreShowtimes(container, theatreId) {
   container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading theatre showtimes...</div>';
 
@@ -70,14 +70,14 @@ async function renderTheatreShowtimes(container, theatreId) {
     const screens = await API.get('/screens') || [];
     const movies = await API.get('/movies') || [];
 
-    // Filter screens for this theatre
+    // filter screens for this theatre
     const tScreens = screens.filter(s => s.theatre_id === Number(theatreId));
     const tScreenIds = tScreens.map(s => s.id);
 
-    // Filter shows for these screens
+    // filter shows for these screens
     const tShows = shows.filter(s => tScreenIds.includes(s.screen_id));
 
-    // Extract unique date strings YYYY-MM-DD from backend shows
+    // extract unique date strings YYYY-MM-DD from backend shows
     const backendDateStrings = new Set();
     tShows.forEach(s => {
       if (s.start_time) {
@@ -88,7 +88,7 @@ async function renderTheatreShowtimes(container, theatreId) {
       }
     });
 
-    // Generate upcoming dates (today + next 3 days)
+    // generate upcoming dates (today + next 3 days)
     const today = new Date();
     for (let i = 0; i < 4; i++) {
       const d = new Date(today);
@@ -114,14 +114,14 @@ async function renderTheatreShowtimes(container, theatreId) {
     let selectedDate = dates.length > 0 ? dates[0].fullDate : new Date().toISOString().split('T')[0];
 
     function renderShowtimesView() {
-      // Filter shows by selected date
+      // filter shows by selected date
       const dateShows = tShows.filter(s => {
         if (!s.start_time) return true;
         const sDate = new Date(s.start_time).toISOString().split('T')[0];
         return sDate === selectedDate;
       });
 
-      // Group shows by movie_id
+      // group shows by movie_id
       const movieMap = {};
       dateShows.forEach(s => {
         if (!movieMap[s.movie_id]) movieMap[s.movie_id] = [];
@@ -240,7 +240,7 @@ async function renderTheatreShowtimes(container, theatreId) {
         </div>
       `;
 
-      // Date pill click listener
+      // date pill click listener
       container.querySelectorAll('.date-pill-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           selectedDate = btn.dataset.date;

@@ -9,12 +9,12 @@ import (
 
 func RegisterShowRoutes(router *gin.Engine, showHandler *handlers.ShowHandler) {
 
-	// Public routes
+	// public routes
 	router.GET("/shows", showHandler.GetAllShows)
 	router.GET("/shows/:id", showHandler.GetShowByID)
 	router.GET("/shows/history/:id", showHandler.GetShowHistoryByID)
 
-	// Protected routes
+	// protected routes
 	shows := router.Group("/shows")
 	shows.Use(middleware.AuthMiddleware(), middleware.AdminMiddleware())
 	{

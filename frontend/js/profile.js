@@ -1,4 +1,4 @@
-/* User Profile & Favorite Genres Module using exact TMDb Genre IDs */
+/* user profile & favorite genres module using exact tmdb genre ids */
 
 async function renderProfile(container) {
   if (!API.getToken()) {
@@ -17,7 +17,7 @@ async function renderProfile(container) {
       userFavGenres = await API.get('/users/me/genres');
     } catch (e) { console.error('Failed to load favorite genres:', e); }
 
-    // Backend Add/Remove Favorite Genres requires TMDb Genre ID (tmdb_id)
+    // backend add/remove favorite genres requires tmdb genre id (tmdb_id)
     const favTmdbIds = (userFavGenres || []).map(g => g.tmdb_id || g.TMDBID || g.id);
 
     container.innerHTML = `
@@ -52,7 +52,7 @@ async function renderProfile(container) {
       </div>
     `;
 
-    // Chip Click Listener to Toggle Favorites
+    // chip click listener to toggle favorites
     const chipsContainer = document.getElementById('profile-genre-chips');
     chipsContainer.addEventListener('click', async (e) => {
       const chip = e.target.closest('.genre-chip');

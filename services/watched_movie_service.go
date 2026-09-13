@@ -44,12 +44,12 @@ func (s *WatchedMovieService) AddWatchedMovie(userID uint, req *dto.CreateWatche
 		WatchedAt: time.Now(),
 	}
 
-	// Save to watched list
+	// save to watched list
 	if err := s.repo.Create(watched); err != nil {
 		return err
 	}
 
-	// Auto-remove from wishlist
+	// auto-remove from wishlist
 	_ = s.wishlistRepo.Delete(userID, req.TMDBID)
 
 	return nil

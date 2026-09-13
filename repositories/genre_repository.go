@@ -10,14 +10,12 @@ type GenreRepository struct {
 	db *gorm.DB
 }
 
-// constructor
 func NewGenreRepository(db *gorm.DB) *GenreRepository {
 	return &GenreRepository{
 		db: db,
 	}
 }
 
-// get all genres
 func (r *GenreRepository) GetAllGenres() ([]models.Genre, error) {
 	var genres []models.Genre
 

@@ -20,7 +20,7 @@ func NewWishlistHandler(service *services.WishlistService) *WishlistHandler {
 	}
 }
 
-// Add a movie to the wishlist.
+// add a movie to the wishlist
 func (h *WishlistHandler) AddMovie(c *gin.Context) {
 
 	var req dto.CreateWishlistRequest
@@ -46,7 +46,7 @@ func (h *WishlistHandler) AddMovie(c *gin.Context) {
 	})
 }
 
-// Get the user's wishlist.
+// get the user's wishlist
 func (h *WishlistHandler) GetWishlist(c *gin.Context) {
 
 	userID := c.MustGet("user_id").(uint)
@@ -61,7 +61,7 @@ func (h *WishlistHandler) GetWishlist(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// / Remove a movie from the wishlist.
+// remove a movie from the wishlist
 func (h *WishlistHandler) RemoveMovie(c *gin.Context) {
 
 	userID := c.MustGet("user_id").(uint)

@@ -10,22 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MovieHandler struct { //The methods in your service are attached to the MovieService type, so you need a MovieService object to call them.and samre for other structs too
+type MovieHandler struct {
 	service *services.MovieService
 }
 
-// constructor
 func NewMovieHandler(service *services.MovieService) *MovieHandler {
 	return &MovieHandler{
 		service: service,
 	}
 }
 
-// create movie
 func (h *MovieHandler) CreateMovie(c *gin.Context) {
 	var movie models.Movie
 
-	//read json request body(maps requested struct to backend struct)..client thing.they could send a bad request
+	// read json request body
 	if err := c.ShouldBindJSON(&movie); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -33,9 +31,9 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 		return
 	}
 
-	//call service...cuz its only handles not do core backend stuff... server thing..err != nil → Checks whether an error exists....err.Error() → Gets the text/message of that same error.
+	// call service to create movie
 	if err := h.service.CreateMovie(&movie); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{ //error for nt
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -44,7 +42,6 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 	c.JSON(http.StatusCreated, movie)
 }
 
-// get movie by its local primary key
 func (h *MovieHandler) GetMovieByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -65,7 +62,6 @@ func (h *MovieHandler) GetMovieByID(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
-// get movie by its TMDB ID
 func (h *MovieHandler) GetMovieByTMDBID(c *gin.Context) {
 	tmdbID, err := strconv.Atoi(c.Param("tmdbId"))
 	if err != nil {
@@ -82,7 +78,6 @@ func (h *MovieHandler) GetMovieByTMDBID(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
-// Get all movies
 func (h *MovieHandler) GetAllMovies(c *gin.Context) {
 	movies, err := h.service.GetAllMovies()
 	if err != nil {
@@ -95,7 +90,6 @@ func (h *MovieHandler) GetAllMovies(c *gin.Context) {
 	c.JSON(http.StatusOK, movies)
 }
 
-// update movie
 func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -105,16 +99,16 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 		return
 	}
 
-	var movie models.Movie //create tempo object  this had everything unassigned or ID=0
+	var movie models.Movie
 
-	if err := c.ShouldBindJSON(&movie); err != nil { //this movie is updated one like the client request this new struct with changes..this i swhat client want it to be so we need to check it too and use bindjson
+	if err := c.ShouldBindJSON(&movie); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	movie.ID = uint(id) //since new struct tempo one has ID=0 so assigning the one need to be
+	movie.ID = uint(id)
 
 	if err := h.service.UpdateMovie(&movie); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -127,7 +121,6 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 
 }
 
-// delete movie
 func (h *MovieHandler) DeleteMovie(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

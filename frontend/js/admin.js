@@ -1,4 +1,4 @@
-/* Admin Dashboard & Management Controller */
+/* admin dashboard & management controller */
 
 let currentAdminTab = 'theatres';
 
@@ -17,7 +17,7 @@ async function renderAdmin(container) {
 
   container.innerHTML = `
     <div class="admin-layout">
-      <!-- Admin Sidebar -->
+      <!-- admin sidebar -->
       <aside class="admin-sidebar">
         <div class="admin-sidebar-brand" style="color: #ffffff;">Admin</div>
         <a href="#/" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem; display: inline-block;">&larr; Back to Main Site</a>
@@ -36,14 +36,14 @@ async function renderAdmin(container) {
         </div>
       </aside>
 
-      <!-- Admin Main Content Area -->
+      <!-- admin main content area -->
       <main id="admin-content-view" class="admin-content">
         <div style="font-size: 0.8125rem; color: var(--text-muted);">Loading view...</div>
       </main>
     </div>
   `;
 
-  // Attach Sidebar Click Listeners
+  // attach sidebar click listeners
   ['theatres', 'shows', 'bookings', 'dashboard'].forEach(tab => {
     const el = document.getElementById(`admin-tab-${tab}`);
     if (el) {
@@ -71,11 +71,11 @@ async function renderAdminTabContent(viewEl) {
   }
 }
 
-/* 1. Combined Theatre & Screen Management View (Correct Backend JSON Field Names) */
+/* 1. combined theatre & screen management view */
 async function renderAdminTheatresView(viewEl) {
   viewEl.innerHTML = `
     <div>
-      <!-- Top Header Row -->
+      <!-- top header row -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 class="page-title" style="font-size: 2rem; margin-bottom: 0.25rem; color: #ffffff;">Theatre Management</h1>
@@ -88,7 +88,7 @@ async function renderAdminTheatresView(viewEl) {
         </button>
       </div>
 
-      <!-- Create Theatre Card -->
+      <!-- create theatre card -->
       <div id="card-add-theatre" class="card" style="display: none; max-width: 600px; margin-bottom: 2rem; border: 1px solid var(--accent-emerald);">
         <h2 class="section-title" style="font-size: 1.1rem; color: #ffffff; margin-bottom: 1rem;">Create New Theatre</h2>
         <form id="admin-form-add-theatre">
@@ -109,19 +109,19 @@ async function renderAdminTheatresView(viewEl) {
         </form>
       </div>
 
-      <!-- Search & Filter Bar -->
+      <!-- search & filter bar -->
       <div style="margin-bottom: 1.5rem;">
         <input type="text" id="t-search-input" class="form-input" placeholder="🔍 Search theatres by branch or city..." style="background-color: #121212; max-width: 500px;" />
       </div>
 
-      <!-- Existing Theatres Cards Grid -->
+      <!-- existing theatres cards grid -->
       <div id="admin-theatres-grid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem;">
         <div style="font-size: 0.8125rem; color: var(--text-muted);">Loading theatres...</div>
       </div>
     </div>
   `;
 
-  // Toggle Create Theatre Form
+  // toggle create theatre form
   const addTheatreCard = document.getElementById('card-add-theatre');
   document.getElementById('btn-toggle-add-theatre').addEventListener('click', () => {
     addTheatreCard.style.display = addTheatreCard.style.display === 'none' ? 'block' : 'none';
@@ -130,7 +130,7 @@ async function renderAdminTheatresView(viewEl) {
     addTheatreCard.style.display = 'none';
   });
 
-  // Handle Submit New Theatre
+  // handle submit new theatre
   document.getElementById('admin-form-add-theatre').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('t-name').value.trim();
@@ -142,7 +142,7 @@ async function renderAdminTheatresView(viewEl) {
     } catch (err) { alert(err.message || 'Failed to create theatre'); }
   });
 
-  // Fetch Theatres & Screens Data
+  // fetch theatres & screens data
   const gridEl = document.getElementById('admin-theatres-grid');
   let allTheatres = [];
   let allScreens = [];
@@ -161,7 +161,7 @@ async function renderAdminTheatresView(viewEl) {
           <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.25rem;">
             
             <div>
-              <!-- Card Header -->
+              <!-- card header -->
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
                 <div style="background-color: rgba(239,68,68,0.15); color: #ef4444; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                   🍿
@@ -174,7 +174,7 @@ async function renderAdminTheatresView(viewEl) {
                 </div>
               </div>
 
-              <!-- Screens List Section -->
+              <!-- screens list section -->
               <div style="background-color: #0a0a0a; border-radius: 8px; padding: 0.85rem; border: 1px solid var(--border-dark); margin-top: 1rem; margin-bottom: 1rem;">
                 <div style="font-size: 0.78rem; font-weight: 700; color: #e5e5e5; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
                   <span>Screens (${tScreens.length})</span>
@@ -197,7 +197,7 @@ async function renderAdminTheatresView(viewEl) {
                   </div>
                 ` : '<div style="font-size: 0.75rem; color: var(--text-muted);">No screens added yet.</div>'}
 
-                <!-- Inline Add Screen Toggle -->
+                <!-- inline add screen toggle -->
                 <details style="margin-top: 0.75rem; font-size: 0.75rem;">
                   <summary style="cursor: pointer; color: var(--brand-primary); font-weight: 600;">+ Add Screen</summary>
                   <form class="form-add-screen-inline" data-theatre-id="${t.id}" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; background-color: #1a1a1a; padding: 0.6rem; border-radius: 6px;">
@@ -210,7 +210,7 @@ async function renderAdminTheatresView(viewEl) {
               </div>
             </div>
 
-            <!-- Card Bottom Action Buttons -->
+            <!-- card bottom action buttons -->
             <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
               <button class="btn btn-secondary btn-sm btn-edit-theatre" data-id="${t.id}" data-name="${t.name}" data-location="${t.location}" style="flex: 1; text-align: center; justify-content: center;">
                 ✏ Edit
@@ -236,12 +236,12 @@ async function renderAdminTheatresView(viewEl) {
     gridEl.innerHTML = `<div class="card" style="color: var(--brand-primary); grid-column: 1/-1;">${err.message || 'Failed to load theatres.'}</div>`;
   }
 
-  // Live Search Filter Listener
+  // live search filter listener
   document.getElementById('t-search-input').addEventListener('input', (e) => {
     renderTheatresList(e.target.value.trim());
   });
 
-  // Event Delegation for Delete Theatre, Edit Theatre, and Add/Delete Screen
+  // event delegation for delete theatre, edit theatre, and add/delete screen
   gridEl.addEventListener('click', async (e) => {
     const delTheatreBtn = e.target.closest('.btn-delete-theatre');
     const editTheatreBtn = e.target.closest('.btn-edit-theatre');
@@ -285,7 +285,7 @@ async function renderAdminTheatresView(viewEl) {
     }
   });
 
-  // Listener for inline Add Screen form submissions
+  // listener for inline add screen form submissions
   gridEl.addEventListener('submit', async (e) => {
     const form = e.target.closest('.form-add-screen-inline');
     if (!form) return;
@@ -298,7 +298,7 @@ async function renderAdminTheatresView(viewEl) {
     try {
       const createdScreen = await API.post('/screens', { theatre_id, screen_number, total_seats });
       
-      // Auto-generate seat layout matching total_seats in database
+      // auto-generate seat layout matching total_seats in database
       const seatsPerRow = total_seats > 50 ? 15 : 10;
       const rows = Math.ceil(total_seats / seatsPerRow);
       try {
@@ -314,7 +314,7 @@ async function renderAdminTheatresView(viewEl) {
   });
 }
 
-/* 2. Shows Tab View: Search & Auto-Import from TMDB API */
+/* 2. shows tab view: search & auto-import from tmdb api */
 async function renderAdminShowsView(viewEl) {
   let selectedMovie = null;
 
@@ -325,17 +325,17 @@ async function renderAdminShowsView(viewEl) {
         Search any movie from TMDB API, auto-import to local database, and assign showtimes.
       </p>
 
-      <!-- Schedule Show Card -->
+      <!-- schedule show card -->
       <div class="card" style="max-width: 600px; margin-bottom: 2rem;">
         <h2 class="section-title">Schedule New Show</h2>
         
         <form id="admin-form-add-show" style="display: flex; flex-direction: column; gap: 1.25rem;">
           
-          <!-- Movie Selection with Interactive TMDB API Search -->
+          <!-- movie selection with interactive tmdb api search -->
           <div class="form-group" style="margin-bottom: 0; position: relative;">
             <label class="form-label">Search & Select Movie (TMDB Import Enabled)</label>
             
-            <!-- Selected Movie Preview Display -->
+            <!-- selected movie preview display -->
             <div id="sh-selected-movie-card" style="display: none; background-color: #0a0a0a; border: 1px solid var(--accent-emerald); border-radius: 8px; padding: 0.75rem; align-items: center; gap: 1rem;">
               <img id="sh-selected-poster" src="" alt="Poster" style="width: 45px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-dark);" />
               <div style="flex: 1;">
@@ -345,20 +345,20 @@ async function renderAdminShowsView(viewEl) {
               <button type="button" id="btn-remove-selected-movie" class="btn btn-danger btn-sm">✕ Remove</button>
             </div>
 
-            <!-- Search Bar Input -->
+            <!-- search bar input -->
             <div id="sh-search-container">
               <input type="text" id="sh-movie-search" class="form-input" placeholder="Type movie title to search TMDB catalog (e.g. Inception, Avatar)..." autocomplete="off" />
               <div id="sh-import-status" style="display: none; font-size: 0.75rem; color: var(--accent-emerald); margin-top: 0.25rem;">
                 ⌛ Importing movie metadata from TMDB into local database...
               </div>
 
-              <!-- Dropdown Search Results Box -->
+              <!-- dropdown search results box -->
               <div id="sh-movie-results" style="display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 100; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 8px; max-height: 300px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.9); margin-top: 4px;">
               </div>
             </div>
           </div>
 
-          <!-- Screen Selection Dropdown -->
+          <!-- screen selection dropdown -->
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="sh-s-id">Select Screen</label>
             <select id="sh-s-id" class="form-input" required>
@@ -366,13 +366,13 @@ async function renderAdminShowsView(viewEl) {
             </select>
           </div>
 
-          <!-- Start Time Picker -->
+          <!-- start time picker -->
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="sh-time">Show Start Time</label>
             <input type="datetime-local" id="sh-time" class="form-input" required />
           </div>
 
-          <!-- Ticket Price Input -->
+          <!-- ticket price input -->
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="sh-price">Ticket Price (Rs.)</label>
             <input type="number" step="0.01" id="sh-price" class="form-input" required placeholder="250.00" />
@@ -382,7 +382,7 @@ async function renderAdminShowsView(viewEl) {
         </form>
       </div>
 
-      <!-- Scheduled Shows Table -->
+      <!-- scheduled shows table -->
       <div>
         <h2 class="section-title">All Scheduled Shows</h2>
         <div id="admin-shows-list">
@@ -393,7 +393,7 @@ async function renderAdminShowsView(viewEl) {
     </div>
   `;
 
-  // Populate Screens Dropdown with Correct Field Names
+  // populate screens dropdown with correct field names
   let screens = [];
   try {
     screens = (await API.get('/screens')) || [];
@@ -413,7 +413,7 @@ async function renderAdminShowsView(viewEl) {
     }
   } catch (e) {}
 
-  // Interactive TMDB API Search Handler
+  // interactive tmdb api search handler
   const searchInput = document.getElementById('sh-movie-search');
   const resultsBox = document.getElementById('sh-movie-results');
   const searchContainer = document.getElementById('sh-search-container');
@@ -433,11 +433,11 @@ async function renderAdminShowsView(viewEl) {
     resultsBox.style.display = 'block';
 
     try {
-      // 1. Fetch Local Published Movies
+      // 1. fetch local published movies
       const localMovies = (await API.get('/movies')) || [];
       const matchingLocal = localMovies.filter(m => (m.title || '').toLowerCase().includes(query.toLowerCase()));
 
-      // 2. Fetch TMDB API Search Results
+      // 2. fetch tmdb api search results
       let tmdbResults = [];
       try {
         const res = await API.get(`/tmdb/search?query=${encodeURIComponent(query)}`);
@@ -446,7 +446,7 @@ async function renderAdminShowsView(viewEl) {
 
       let html = '';
 
-      // Published Movies Section
+      // published movies section
       if (matchingLocal.length > 0) {
         html += `<div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-emerald); padding: 0.4rem 0.8rem; background-color: #0a0a0a;">PUBLISHED LOCAL MOVIES</div>`;
         html += matchingLocal.map(m => {
@@ -465,7 +465,7 @@ async function renderAdminShowsView(viewEl) {
         }).join('');
       }
 
-      // TMDB API Catalog Results Section
+      // tmdb api catalog results section
       if (tmdbResults.length > 0) {
         html += `<div style="font-size: 0.72rem; font-weight: 700; color: var(--brand-primary); padding: 0.4rem 0.8rem; background-color: #0a0a0a;">TMDB API CATALOG (CLICK TO IMPORT)</div>`;
         html += tmdbResults.slice(0, 8).map(m => {
@@ -506,7 +506,7 @@ async function renderAdminShowsView(viewEl) {
     });
   }
 
-  // Handle Clicking a Movie from Search Dropdown
+  // handle clicking a movie from search dropdown
   if (resultsBox) {
     resultsBox.addEventListener('click', async (e) => {
       const item = e.target.closest('.sh-movie-item');
@@ -524,13 +524,13 @@ async function renderAdminShowsView(viewEl) {
         importStatus.style.display = 'block';
 
         try {
-          // 1. Check if already published
+          // 1. check if already published
           let published = null;
           try {
             published = await API.get(`/movies/tmdb/${tmdbId}`);
           } catch (e) {}
 
-          // 2. Publish from TMDB if not already in local database
+          // 2. publish from tmdb if not already in local database
           if (!published || !published.id) {
             published = await API.post(`/tmdb/publish/${tmdbId}`);
           }
@@ -560,7 +560,7 @@ async function renderAdminShowsView(viewEl) {
     });
   }
 
-  // Remove Selected Movie Button Handler
+  // remove selected movie button handler
   if (removeMovieBtn) {
     removeMovieBtn.addEventListener('click', () => {
       selectedMovie = null;
@@ -570,7 +570,7 @@ async function renderAdminShowsView(viewEl) {
     });
   }
 
-  // Submit Schedule Show Form
+  // submit schedule show form
   document.getElementById('admin-form-add-show').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!selectedMovie || !selectedMovie.id) {
@@ -590,7 +590,7 @@ async function renderAdminShowsView(viewEl) {
     } catch (err) { alert(err.message || 'Failed to schedule show'); }
   });
 
-  // Render Existing Scheduled Shows Table
+  // render existing scheduled shows table
   const showsListEl = document.getElementById('admin-shows-list');
   try {
     const shows = await API.get('/shows');
@@ -656,7 +656,7 @@ async function renderAdminShowsView(viewEl) {
   }
 }
 
-/* 3. Bookings Tab View */
+/* 3. bookings tab view */
 async function renderAdminBookingsView(viewEl) {
   viewEl.innerHTML = `
     <div>
@@ -811,7 +811,7 @@ async function renderAdminBookingsView(viewEl) {
   }
 }
 
-/* 4. Dashboard Tab View */
+/* 4. dashboard tab view */
 async function renderAdminDashboardView(viewEl) {
   viewEl.innerHTML = '<div style="font-size: 0.8125rem; color: var(--text-muted);">Loading stats...</div>';
   try {

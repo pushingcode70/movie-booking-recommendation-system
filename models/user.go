@@ -14,17 +14,17 @@ type User struct {
 	Password string `json:"-"`
 	Role     string `gorm:"type:varchar(20);default:'customer'" json:"role"`
 
-	// Genres selected by the user as their preferred movie genres.
+	// genres selected by the user as their preferred movie genres
 	FavoriteGenres []Genre `gorm:"many2many:user_favorite_genres;" json:"favorite_genres"`
 
-	// Indicates whether the user's email has been verified.
+	// indicates whether the user's email has been verified
 	IsVerified bool `gorm:"default:false" json:"is_verified"`
 
-	// Stores the latest OTP sent to the user's email.
-	// Cleared after successful verification.
+	// stores the latest otp sent to the user's email
+	// cleared after successful verification
 	OTPCode string `json:"-"`
 
-	// Expiration time for the OTP.
-	// Nil means there is no active OTP.
+	// expiration time for the otp
+	// nil means there is no active otp
 	OTPExpiresAt *time.Time `json:"-"`
 }

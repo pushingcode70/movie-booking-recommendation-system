@@ -11,20 +11,18 @@ type ScreenRepository struct {
 	db *gorm.DB
 }
 
-// Constructor
 func NewScreenRepository(db *gorm.DB) *ScreenRepository {
 	return &ScreenRepository{db: db}
 }
 
-// Create Screen
 func (r *ScreenRepository) CreateScreen(screen *models.Screen) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
-		// 1. Create the screen record
+		// create screen record
 		if err := tx.Create(screen).Error; err != nil {
 			return err
 		}
 
-		// 2. Generate exactly TotalSeats physical seats.
+		// generate physical seats
 		totalSeats := screen.TotalSeats
 		if totalSeats <= 0 {
 			return nil
@@ -54,7 +52,6 @@ func (r *ScreenRepository) CreateScreen(screen *models.Screen) error {
 	})
 }
 
-// Get Screen by ID
 func (r *ScreenRepository) GetScreenByID(id uint) (*models.Screen, error) {
 	var screen models.Screen
 
@@ -66,7 +63,6 @@ func (r *ScreenRepository) GetScreenByID(id uint) (*models.Screen, error) {
 	return &screen, nil
 }
 
-// Get All Screens
 func (r *ScreenRepository) GetAllScreens() ([]models.Screen, error) {
 	var screens []models.Screen
 
@@ -78,7 +74,6 @@ func (r *ScreenRepository) GetAllScreens() ([]models.Screen, error) {
 	return screens, nil
 }
 
-// Update Screen
 func (r *ScreenRepository) UpdateScreen(screen *models.Screen) error {
 	return r.db.Save(screen).Error
 }
@@ -97,14 +92,12 @@ func (r *ScreenRepository) DeleteScreen(id uint) error {
 	})
 }
 
-// Use the repository with an existing transaction.
 func (r *ScreenRepository) WithTx(tx *gorm.DB) *ScreenRepository {
 	return &ScreenRepository{
 		db: tx,
 	}
 }
 
-// updates the total seat capacity of a screen.
 func (r *ScreenRepository) UpdateTotalSeats(screenID uint, totalSeats int) error {
 	return r.db.
 		Model(&models.Screen{}).

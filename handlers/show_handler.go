@@ -17,12 +17,10 @@ type ShowHandler struct {
 	service *services.ShowService
 }
 
-// Constructor
 func NewShowHandler(service *services.ShowService) *ShowHandler {
 	return &ShowHandler{service: service}
 }
 
-// Create Show
 func (h *ShowHandler) CreateShow(c *gin.Context) {
 
 	var req dto.CreateShowRequest
@@ -48,7 +46,6 @@ func (h *ShowHandler) CreateShow(c *gin.Context) {
 	c.JSON(http.StatusCreated, show)
 }
 
-// Get Show by ID
 func (h *ShowHandler) GetShowByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -62,7 +59,7 @@ func (h *ShowHandler) GetShowByID(c *gin.Context) {
 		return
 	}
 
-	// Block access if the show has already ended
+	// block access if the show has already ended
 	if show.EndTime.Before(time.Now()) {
 		c.JSON(http.StatusGone, gin.H{"error": "This show has already ended and is no longer available for booking"})
 		return
@@ -71,7 +68,6 @@ func (h *ShowHandler) GetShowByID(c *gin.Context) {
 	c.JSON(http.StatusOK, show)
 }
 
-// Get All Shows
 func (h *ShowHandler) GetAllShows(c *gin.Context) {
 	shows, err := h.service.GetAllShows()
 	if err != nil {
@@ -82,9 +78,8 @@ func (h *ShowHandler) GetAllShows(c *gin.Context) {
 	c.JSON(http.StatusOK, shows)
 }
 
-// Update Show
 func (h *ShowHandler) UpdateShow(c *gin.Context) {
-	//parsing and binding recieved request
+	// parsing and binding received request
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
@@ -98,7 +93,7 @@ func (h *ShowHandler) UpdateShow(c *gin.Context) {
 		return
 	}
 
-	//get existing show
+	// get existing show
 	show, err := h.service.GetShowByID(uint(id))
 
 	if err != nil {
@@ -106,11 +101,11 @@ func (h *ShowHandler) UpdateShow(c *gin.Context) {
 		return
 	}
 
-	//update editable field
+	// update editable fields
 	show.StartTime = req.StartTime
 	show.Price = req.Price
 
-	// Save changes
+	// save changes
 	if err := h.service.UpdateShow(show); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -119,7 +114,6 @@ func (h *ShowHandler) UpdateShow(c *gin.Context) {
 	c.JSON(http.StatusOK, show)
 }
 
-// Delete Show
 func (h *ShowHandler) DeleteShow(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -135,8 +129,6 @@ func (h *ShowHandler) DeleteShow(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Show deleted successfully"})
 }
 
-// GetShowHistoryByID returns show details even if the show has ended.
-// This is used by booking history.
 func (h *ShowHandler) GetShowHistoryByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

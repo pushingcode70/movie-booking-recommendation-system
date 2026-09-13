@@ -14,12 +14,10 @@ type ScreenHandler struct {
 	service *services.ScreenService
 }
 
-// Constructor
 func NewScreenHandler(service *services.ScreenService) *ScreenHandler {
 	return &ScreenHandler{service: service}
 }
 
-// Create Screen
 func (h *ScreenHandler) CreateScreen(c *gin.Context) {
 	var screen models.Screen
 
@@ -36,7 +34,6 @@ func (h *ScreenHandler) CreateScreen(c *gin.Context) {
 	c.JSON(http.StatusCreated, screen)
 }
 
-// Get Screen by ID
 func (h *ScreenHandler) GetScreenByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -53,7 +50,6 @@ func (h *ScreenHandler) GetScreenByID(c *gin.Context) {
 	c.JSON(http.StatusOK, screen)
 }
 
-// Get All Screens
 func (h *ScreenHandler) GetAllScreens(c *gin.Context) {
 	screens, err := h.service.GetAllScreens()
 	if err != nil {
@@ -64,7 +60,6 @@ func (h *ScreenHandler) GetAllScreens(c *gin.Context) {
 	c.JSON(http.StatusOK, screens)
 }
 
-// Update Screen
 func (h *ScreenHandler) UpdateScreen(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -89,7 +84,6 @@ func (h *ScreenHandler) UpdateScreen(c *gin.Context) {
 	c.JSON(http.StatusOK, screen)
 }
 
-// Delete Screen
 func (h *ScreenHandler) DeleteScreen(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

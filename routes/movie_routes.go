@@ -15,12 +15,12 @@ func RegisterRoutes(router *gin.Engine, movieHandler *handlers.MovieHandler) {
 		})
 	})
 
-	// Public
+	// public
 	router.GET("/movies", movieHandler.GetAllMovies)
 	router.GET("/movies/tmdb/:tmdbId", movieHandler.GetMovieByTMDBID)
 	router.GET("/movies/:id", movieHandler.GetMovieByID)
 
-	// Protected
+	// protected
 	movies := router.Group("/movies")
 	movies.Use(middleware.AuthMiddleware(),
 		middleware.AdminMiddleware(),

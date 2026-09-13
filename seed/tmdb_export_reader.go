@@ -13,7 +13,7 @@ type TMDBExportMovie struct {
 	Popularity float64 `json:"popularity"`
 }
 
-// reads TMDB's gzipped daily movie export.
+// reads tmdb's gzipped daily movie export
 func ReadMovieExport(filePath string) ([]TMDBExportMovie, error) {
 
 	file, err := os.Open(filePath)
@@ -22,7 +22,7 @@ func ReadMovieExport(filePath string) ([]TMDBExportMovie, error) {
 	}
 	defer file.Close()
 
-	// Decompress the .json.gz export.
+	// decompress the .json.gz export
 	gzReader, err := gzip.NewReader(file)
 	if err != nil {
 		return nil, err
@@ -33,10 +33,10 @@ func ReadMovieExport(filePath string) ([]TMDBExportMovie, error) {
 
 	scanner := bufio.NewScanner(gzReader)
 
-	//increase the limit because export records can be large.
+	// increase buffer limit for large export records
 	scanner.Buffer(make([]byte, 64*1024), 1024*1024)
 
-	//each line in the export is a separate JSON object.
+	// each line in export is a separate json object
 	for scanner.Scan() {
 
 		var movie TMDBExportMovie

@@ -53,7 +53,7 @@ func (r *TheatreRepository) UpdateTheatre(theatre *models.Theatre) error {
 }
 
 func (r *TheatreRepository) DeleteTheatre(id uint) error {
-	return r.db.Delete(&models.Theatre{}, id).Error // Use the Theatre model to identify the table and delete the record with the given ID.
+	return r.db.Delete(&models.Theatre{}, id).Error // use theatre model to identify table and delete record by id
 }
 
 func (r *TheatreRepository) GetTheatreSchedule(theatreID uint, date string) ([]dto.TheatreScheduleRow, error) {

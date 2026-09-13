@@ -25,7 +25,6 @@ type PaymentService struct {
 	emailService    *EmailService
 }
 
-// Constructor
 func NewPaymentService(db *gorm.DB, repo *repositories.PaymentRepository,
 	bookingRepo *repositories.BookingRepository,
 	userRepo *repositories.UserRepository,
@@ -53,11 +52,9 @@ func NewPaymentService(db *gorm.DB, repo *repositories.PaymentRepository,
 	}
 }
 
-// verify payment
 func (s *PaymentService) VerifyPayment(req *dto.VerifyPaymentRequest) error {
 
-	// 1. Find the payment record using the Razorpay Order ID
-	// We saved this Order ID when creating the Razorpay order.
+	// find payment record using razorpay order id
 	payment, err := s.repo.GetPaymentByRazorpayOrderID(req.RazorpayOrderID)
 	if err != nil {
 		return err
@@ -67,8 +64,7 @@ func (s *PaymentService) VerifyPayment(req *dto.VerifyPaymentRequest) error {
 		return nil
 	}
 
-	// 2. Verify that the payment details really came from Razorpay
-	// and were not tampered with by the client.
+	// verify payment signature with razorpay
 	valid := s.razorpayService.VerifyPaymentSignature(req.RazorpayOrderID, req.RazorpayPaymentID, req.RazorpaySignature)
 
 	if !valid {
@@ -76,11 +72,11 @@ func (s *PaymentService) VerifyPayment(req *dto.VerifyPaymentRequest) error {
 
 	}
 
-	//store raozrpaypayment is id and mark payment as successful
+	// store razorpay payment id and mark payment successful
 	payment.RazorpayPaymentID = req.RazorpayPaymentID
 	payment.Status = "SUCCESS"
 
-	//update payment and booking together
+	// update payment and booking together
 	tx := s.db.Begin()
 	if tx.Error != nil {
 		return tx.Error
@@ -115,62 +111,62 @@ func (s *PaymentService) VerifyPayment(req *dto.VerifyPaymentRequest) error {
 		return err
 	}
 
-	// Get booking
+	// get booking
 	booking, err := s.bookingRepo.GetBookingByID(payment.BookingID)
 	if err != nil {
 		return err
 	}
 
-	// Get user
+	// get user
 	user, err := s.userRepo.GetUserByID(booking.UserID)
 	if err != nil {
 		return err
 	}
 
-	// Get show
+	// get show
 	show, err := s.showRepo.GetShowByID(booking.ShowID)
 	if err != nil {
 		return err
 	}
 
-	// Get movie
+	// get movie
 	movie, err := s.movieRepo.GetMovieByID(show.MovieID)
 	if err != nil {
 		return err
 	}
 
-	// Get screen
+	// get screen
 	screen, err := s.screenRepo.GetScreenByID(show.ScreenID)
 	if err != nil {
 		return err
 	}
 
-	// Get theatre
+	// get theatre
 	theatre, err := s.theatreRepo.GetTheatreByID(screen.TheatreID)
 	if err != nil {
 		return err
 	}
 
-	// Get all booked seats for this booking
+	// get all booked seats for this booking
 	bookingSeats, err := s.bookingSeatRepo.GetBookingSeatsByBookingID(booking.ID)
 	if err != nil {
 		return err
 	}
 
-	// Extract only the Seat IDs from the booking-seat records.
+	// extract seat ids
 	var seatIDs []uint
 
 	for _, bs := range bookingSeats {
 		seatIDs = append(seatIDs, bs.SeatID)
 	}
 
-	// Fetch complete seat details using the extracted Seat IDs.
+	// fetch complete seat details using extracted seat ids
 	seats, err := s.seatRepo.GetSeatByIDs(seatIDs)
 	if err != nil {
 		return err
 	}
 
-	// Extract seat numbers (e.g., A1, A2, B3) for the ticket/email.
+	// extract seat numbers for ticket email
 	var seatNumbers []string
 
 	for _, seat := range seats {
@@ -185,7 +181,7 @@ func (s *PaymentService) VerifyPayment(req *dto.VerifyPaymentRequest) error {
 		TheatreName:  theatre.Name,
 		ScreenName:   strconv.Itoa(screen.ScreenNumber),
 		ShowTime:     show.StartTime.Format("03:04 PM"),
-		ShowDate:     show.StartTime.Format("02 Jan 2006"), //it converts into string as email dto takes string
+		ShowDate:     show.StartTime.Format("02 Jan 2006"),
 		Seats:        seatNumbers,
 		Amount:       booking.TotalAmount,
 	}

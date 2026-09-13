@@ -10,19 +10,16 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
-// constructor
 func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{
 		db: db,
 	}
 }
 
-// create a user
 func (r *UserRepository) CreateUser(user *models.User) error {
 	return r.db.Create(user).Error
 }
 
-// get user by id
 func (r *UserRepository) GetUserByID(id uint) (*models.User, error) {
 	var user models.User
 
@@ -34,7 +31,6 @@ func (r *UserRepository) GetUserByID(id uint) (*models.User, error) {
 	return &user, nil
 }
 
-// get user by email
 func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 	var user models.User
@@ -47,7 +43,6 @@ func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-// update user
 func (r *UserRepository) UpdateUser(user *models.User) error {
 	return r.db.Save(user).Error
 }

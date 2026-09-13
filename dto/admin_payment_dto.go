@@ -2,8 +2,7 @@ package dto
 
 import "time"
 
-// AdminRecentPaymentResponse represents a payment shown
-// on the admin dashboard's "Recent Payments" widget.
+// adminRecentPaymentResponse represents a payment shown on admin dashboard
 type AdminRecentPaymentResponse struct {
 	PaymentID    uint      `json:"payment_id"`
 	BookingID    uint      `json:"booking_id"`

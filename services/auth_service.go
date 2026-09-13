@@ -17,7 +17,6 @@ type AuthService struct {
 	emailService *EmailService
 }
 
-// constructor
 func NewAuthService(repo *repositories.UserRepository, emailService *EmailService) *AuthService {
 	return &AuthService{
 		repo:         repo,
@@ -170,7 +169,6 @@ func (s *AuthService) VerifyOTP(req dto.VerifyOTPRequest) error {
 	return nil
 }
 
-// resend otp
 func (s *AuthService) ResendOTP(req dto.ResendOTPRequest) error {
 
 	// find the user by email
@@ -213,7 +211,6 @@ func (s *AuthService) ResendOTP(req dto.ResendOTPRequest) error {
 	return nil
 }
 
-// forgot password generates and emails a temporary otp for password reset
 func (s *AuthService) ForgotPassword(req dto.ForgotPasswordRequest) error {
 
 	// find the user by email

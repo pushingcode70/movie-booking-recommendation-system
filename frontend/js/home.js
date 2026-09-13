@@ -1,11 +1,11 @@
-/* Home & Recommendation Controller with single Favorite Genre shelf, 30-movie limit, >= 90 min filter, and clean headings */
+/* home & recommendation controller with single favorite genre shelf, 30-movie limit, >= 90 min filter, and clean headings */
 
 function renderMovieCard(movie) {
   if (!movie) return '';
 
   const duration = movie.duration || movie.runtime || 0;
   if (duration > 0 && duration < 90) {
-    return ''; // Strictly do not show any movie under 90 minutes
+    return ''; // strictly do not show any movie under 90 minutes
   }
 
   const poster = movie.poster_path
@@ -15,9 +15,9 @@ function renderMovieCard(movie) {
   const durationStr = duration ? `${duration} mins` : '';
   const langStr = movie.language ? movie.language.toUpperCase() : (movie.original_language ? movie.original_language.toUpperCase() : 'EN');
   
-  // Explicit Route Disambiguation:
-  // Local Published Movie -> is_local === true -> #/movies/<local_id>
-  // External TMDB Movie   -> is_local === false -> #/tmdb/<tmdb_id>
+  // explicit route disambiguation:
+  // local published movie -> is_local === true -> #/movies/<local_id>
+  // external tmdb movie   -> is_local === false -> #/tmdb/<tmdb_id>
   const tmdbId = movie.tmdb_id || movie.TMDBID || movie.id;
   const route = (movie.is_local && movie.id) ? `#/movies/${movie.id}` : `#/tmdb/${tmdbId}`;
 
@@ -34,32 +34,32 @@ function renderMovieCard(movie) {
   `;
 }
 
-// Resolves raw recommendation items to full Movie data objects with explicit is_local flags & 90+ min filter
+// resolves raw recommendation items to full movie data objects with explicit is_local flags & 90+ min filter
 async function resolveRecommendationMovies(rawItems) {
   if (!rawItems || rawItems.length === 0) return [];
 
-  // Resolve each raw item containing tmdb_id or movie object
+  // resolve each raw item containing tmdb_id or movie object
   const resolved = await Promise.all(
     rawItems.slice(0, 40).map(async (item) => {
       const tmdbId = item.tmdb_id || item.TMDBID || (item.movie && (item.movie.tmdb_id || item.movie.TMDBID)) || item.id;
       if (!tmdbId) return null;
 
-      // 1. Check if movie is published in local database
+      // 1. check if movie is published in local database
       try {
         const localMovie = await API.get(`/movies/tmdb/${tmdbId}`);
         if (localMovie && localMovie.id) {
           const dur = localMovie.duration || localMovie.runtime || 0;
-          if (dur > 0 && dur < 90) return null; // Filter movies < 90 mins
+          if (dur > 0 && dur < 90) return null; // filter movies < 90 mins
           return { ...localMovie, is_local: true };
         }
       } catch (e) {}
 
-      // 2. Fallback to TMDB movie details endpoint (External catalog item)
+      // 2. fallback to tmdb movie details endpoint (external catalog item)
       try {
         const tmdbMovie = await API.get(`/tmdb/movie/${tmdbId}`);
         if (tmdbMovie && (tmdbMovie.title || tmdbMovie.name)) {
           const dur = tmdbMovie.runtime || tmdbMovie.duration || 0;
-          if (dur > 0 && dur < 90) return null; // Filter movies < 90 mins
+          if (dur > 0 && dur < 90) return null; // filter movies < 90 mins
 
           return {
             is_local: false,
@@ -87,7 +87,7 @@ async function renderHome(container) {
 
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 2.5rem;">
-      <!-- Search Card -->
+      <!-- search card -->
       <div class="search-card">
         <form id="form-search-recommendation">
           <div class="search-input-wrapper">
@@ -95,14 +95,14 @@ async function renderHome(container) {
             <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Find Movies</button>
           </div>
 
-          <!-- Genre Chips List -->
+          <!-- genre chips list -->
           <div id="rec-genre-chips" class="genre-chips">
             <div style="font-size: 0.75rem; color: var(--text-muted);">Loading genres...</div>
           </div>
         </form>
       </div>
 
-      <!-- Main Recommendation / Search Results Section (Up to 30 Movies) -->
+      <!-- main recommendation / search results section (up to 30 movies) -->
       <div>
         <h2 id="results-heading" class="section-title">Recommended For You</h2>
         <div id="home-movies-grid" class="grid">
@@ -111,7 +111,7 @@ async function renderHome(container) {
       </div>
 
       ${isLoggedIn ? `
-        <!-- Single Favorite Genres Shelf (Up to 30 Movies) -->
+        <!-- single favorite genres shelf (up to 30 movies) -->
         <div>
           <h2 class="section-title">Based on Genres You Like</h2>
           <div id="shelf-fav-genres" class="grid">
@@ -122,7 +122,7 @@ async function renderHome(container) {
     </div>
   `;
 
-  // Fetch Genres for Chips
+  // fetch genres for chips
   let selectedGenreIds = [];
   try {
     const genres = await API.get('/genres');
@@ -150,7 +150,7 @@ async function renderHome(container) {
     console.error('Failed to load genres:', err);
   }
 
-  // Load Initial Recommended / Published Movies (Slice 30, >= 90 mins, tagged with is_local: true)
+  // load initial recommended / published movies
   const gridEl = document.getElementById('home-movies-grid');
   try {
     const movies = await API.get('/movies');
@@ -167,13 +167,13 @@ async function renderHome(container) {
     gridEl.innerHTML = `<div style="font-size: 0.8125rem; color: var(--brand-primary);">Failed to load movies.</div>`;
   }
 
-  // Handle Search / Recommendation Form Submit
+  // handle search / recommendation form submit
   document.getElementById('form-search-recommendation').addEventListener('submit', async (e) => {
     e.preventDefault();
     const prompt = document.getElementById('rec-prompt').value.trim();
     const headingEl = document.getElementById('results-heading');
     
-    // Clean section heading without repeating long prompt text
+    // clean section heading without repeating long prompt text
     headingEl.textContent = prompt ? 'Search Results' : 'Recommended For You';
     gridEl.innerHTML = '<div style="font-size: 0.8125rem; color: var(--text-muted);">Searching recommendations...</div>';
 
@@ -190,7 +190,7 @@ async function renderHome(container) {
         rawMovies = (pubMovies || []).map(m => ({ ...m, is_local: true }));
       }
 
-      // Resolve metadata, explicit is_local flag, and filter out movies < 90 minutes
+      // resolve metadata, explicit is_local flag, and filter out movies < 90 minutes
       const resolvedMovies = await resolveRecommendationMovies(rawMovies);
 
       if (resolvedMovies && resolvedMovies.length > 0) {
@@ -208,7 +208,7 @@ async function renderHome(container) {
     }
   });
 
-  // Load Single Favorite Genres Recommendation Shelf for Logged-In User
+  // load single favorite genres recommendation shelf for logged-in user
   if (isLoggedIn) {
     const favShelfEl = document.getElementById('shelf-fav-genres');
     try {

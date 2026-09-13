@@ -9,12 +9,12 @@ import (
 
 func RegisterSeatRoutes(router *gin.Engine, seatHandler *handlers.SeatHandler) {
 
-	// Public routes
+	// public routes
 	router.GET("/seats", seatHandler.GetAllSeats)
 	router.GET("/seats/:id", seatHandler.GetSeatByID)
 	router.GET("/shows/:id/seats", seatHandler.GetShowSeatLayout)
 
-	// Admin-only route
+	// admin-only route
 	admin := router.Group("/")
 	admin.Use(
 		middleware.AuthMiddleware(),
@@ -23,7 +23,7 @@ func RegisterSeatRoutes(router *gin.Engine, seatHandler *handlers.SeatHandler) {
 
 	admin.POST("/screens/:id/seats/generate", seatHandler.GenerateSeats)
 
-	// Existing seat CRUD
+	// existing seat crud
 	seats := router.Group("/seats")
 	seats.Use(
 		middleware.AuthMiddleware(),

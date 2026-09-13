@@ -20,46 +20,46 @@ func NewAdminRepository(db *gorm.DB) *AdminRepository {
 func (r *AdminRepository) GetDashboardStats() (*dto.DashboardResponse, error) {
 	var stats dto.DashboardResponse
 
-	// Movies
+	// movies
 	if err := r.db.Model(&models.Movie{}).Count(&stats.TotalMovies).Error; err != nil {
 		return nil, err
 	}
 
-	// Theatres
+	// theatres
 	if err := r.db.Model(&models.Theatre{}).Count(&stats.TotalTheatres).Error; err != nil {
 		return nil, err
 	}
 
-	// Screens
+	// screens
 	if err := r.db.Model(&models.Screen{}).Count(&stats.TotalScreens).Error; err != nil {
 		return nil, err
 	}
 
-	// Active Shows (end_time in the future)
+	// active shows (end_time in the future)
 	if err := r.db.Model(&models.Show{}).Where("end_time >= NOW()").Count(&stats.TotalShows).Error; err != nil {
 		return nil, err
 	}
 
-	// Bookings
+	// bookings
 	if err := r.db.Model(&models.Booking{}).Count(&stats.TotalBookings).Error; err != nil {
 		return nil, err
 	}
 
-	// Successful Payments
+	// successful payments
 	if err := r.db.Model(&models.Payment{}).
 		Where("status = ?", "SUCCESS").
 		Count(&stats.SuccessfulPayments).Error; err != nil {
 		return nil, err
 	}
 
-	// Pending Payments
+	// pending payments
 	if err := r.db.Model(&models.Payment{}).
 		Where("status = ?", "PENDING").
 		Count(&stats.PendingPayments).Error; err != nil {
 		return nil, err
 	}
 
-	// Total Revenue
+	// total revenue
 	if err := r.db.Model(&models.Payment{}).
 		Where("status = ?", "SUCCESS").
 		Select("COALESCE(SUM(amount), 0)").
@@ -129,7 +129,6 @@ func (r *AdminRepository) GetRecentBookings(date string) ([]dto.AdminRecentBooki
 	return bookings, nil
 }
 
-// GetRunningShows returns all shows that are currently running.
 func (r *AdminRepository) GetRunningShows() ([]dto.AdminRunningShowResponse, error) {
 
 	var shows []dto.AdminRunningShowResponse
@@ -154,13 +153,10 @@ func (r *AdminRepository) GetRunningShows() ([]dto.AdminRunningShowResponse, err
 	if err != nil {
 		return nil, err
 	}
-	// For every running show, calculate:
-	// 1. Total seats in the screen
-	// 2. Booked seats
-	// 3. Occupancy percentage
+	// for every running show, calculate occupancy details
 	for i := range shows {
 
-		// Count total seats in this screen
+		// count total seats in this screen
 		var totalSeats int64
 
 		err = r.db.
@@ -175,7 +171,7 @@ func (r *AdminRepository) GetRunningShows() ([]dto.AdminRunningShowResponse, err
 
 		shows[i].TotalSeats = totalSeats
 
-		// Count booked seats for this show
+		// count booked seats for this show
 		var bookedSeats int64
 
 		err = r.db.
@@ -191,7 +187,7 @@ func (r *AdminRepository) GetRunningShows() ([]dto.AdminRunningShowResponse, err
 
 		shows[i].BookedSeats = bookedSeats
 
-		// Calculate occupancy percentage
+		// calculate occupancy percentage
 		if totalSeats > 0 {
 			shows[i].Occupancy = float64(bookedSeats) / float64(totalSeats) * 100
 		}
@@ -200,7 +196,6 @@ func (r *AdminRepository) GetRunningShows() ([]dto.AdminRunningShowResponse, err
 	return shows, nil
 }
 
-// GetTheatreSchedule returns all shows for a theatre.
 func (r *AdminRepository) GetTheatreSchedule(theatreID uint, date string) ([]dto.AdminScheduleResponse, error) {
 
 	var schedule []dto.AdminScheduleResponse

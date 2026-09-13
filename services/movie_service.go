@@ -11,7 +11,6 @@ type MovieService struct {
 	tmdbService *TMDBService
 }
 
-// constructor
 func NewMovieService(repo *repositories.MovieRepository, tmdbService *TMDBService) *MovieService {
 	return &MovieService{
 		repo:        repo,
@@ -19,17 +18,14 @@ func NewMovieService(repo *repositories.MovieRepository, tmdbService *TMDBServic
 	}
 }
 
-// create a movie
 func (s *MovieService) CreateMovie(movie *models.Movie) error {
 	return s.repo.CreateMovie(movie)
 }
 
-// get a movie by local primary key id
 func (s *MovieService) GetMovieByID(id uint) (*models.Movie, error) {
 	return s.repo.GetMovieByID(id)
 }
 
-// get a movie by its TMDB ID, director/cast if missing
 func (s *MovieService) GetMovieByTMDBID(tmdbID int) (*models.Movie, error) {
 	movie, err := s.repo.GetMovieByTMDBID(tmdbID)
 	if err != nil {
@@ -61,17 +57,14 @@ func (s *MovieService) GetMovieByTMDBID(tmdbID int) (*models.Movie, error) {
 	return movie, nil
 }
 
-// get all movies
 func (s *MovieService) GetAllMovies() ([]models.Movie, error) {
 	return s.repo.GetAllMovies()
 }
 
-// update an existing movie
 func (s *MovieService) UpdateMovie(movie *models.Movie) error {
 	return s.repo.UpdateMovie(movie)
 }
 
-// delete a movie by id
 func (s *MovieService) DeleteMovie(id uint) error {
 	return s.repo.DeleteMovie(id)
 }

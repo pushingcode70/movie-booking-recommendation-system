@@ -10,7 +10,6 @@ type BookingSeatRepository struct {
 	db *gorm.DB
 }
 
-// Constructor
 func NewBookingSeatRepository(db *gorm.DB) *BookingSeatRepository {
 	return &BookingSeatRepository{
 		db: db,
@@ -22,12 +21,10 @@ func (r *BookingSeatRepository) WithTx(tx *gorm.DB) *BookingSeatRepository {
 	}
 }
 
-// Create BookingSeat
 func (r *BookingSeatRepository) CreateBookingSeat(bookingSeat *models.BookingSeat) error {
 	return r.db.Create(bookingSeat).Error
 }
 
-// Get BookingSeats By Booking ID
 func (r *BookingSeatRepository) GetBookingSeatsByBookingID(bookingID uint) ([]models.BookingSeat, error) {
 	var bookingSeats []models.BookingSeat
 
@@ -39,11 +36,6 @@ func (r *BookingSeatRepository) GetBookingSeatsByBookingID(bookingID uint) ([]mo
 	return bookingSeats, nil
 }
 
-/*input: Seat IDs the user wants to book.
-Process: Check whether those IDs already exist in booking_seats.
-Output: A list of the requested seat IDs that are already booked.*/
-//the below func will demonstrate this
-
 func (r *BookingSeatRepository) GetBookedSeatIDs(showID uint, seatIDs []uint) ([]uint, error) {
 	var bookedSeatIDs []uint
 
@@ -51,7 +43,7 @@ func (r *BookingSeatRepository) GetBookedSeatIDs(showID uint, seatIDs []uint) ([
 		Model(&models.BookingSeat{}).
 		Joins("JOIN bookings ON bookings.id = booking_seats.booking_id").
 		Where("bookings.show_id = ? AND booking_seats.seat_id IN ? AND bookings.status = ?", showID, seatIDs, "CONFIRMED").
-		Pluck("booking_seats.seat_id", &bookedSeatIDs).Error //only return booked seat ids not entire row
+		Pluck("booking_seats.seat_id", &bookedSeatIDs).Error // return only booked seat ids
 
 	if err != nil {
 		return nil, err

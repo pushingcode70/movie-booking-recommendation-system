@@ -1,4 +1,4 @@
-/* Pure Black Background Design System matching CinePass screenshots */
+/* pure black background design system matching CinePass screenshots */
 :root {
   --bg-main: #000000;
   --bg-card: #121212;
@@ -6,7 +6,7 @@
   --border-dark: #262626;
   --text-main: #e5e5e5;
   --text-muted: #8e8e93;
-  --brand-primary: #ef4444; /* CinePass Red */
+  --brand-primary: #ef4444; /* cinepass red */
   --brand-hover: #dc2626;
   --accent-emerald: #10b981;
   --accent-yellow: #d97706;
@@ -33,7 +33,7 @@ a {
   text-decoration: none;
 }
 
-/* Navbar */
+/* navbar */
 .navbar {
   background-color: #050505;
   border-bottom: 1px solid var(--border-dark);
@@ -91,7 +91,7 @@ a {
   font-weight: 600;
 }
 
-/* Global Header Search Bar */
+/* global header search bar */
 .global-search-container {
   position: relative;
   flex: 1;
@@ -173,7 +173,7 @@ a {
   color: var(--text-muted);
 }
 
-/* Main Layout */
+/* main layout */
 .main-content {
   max-width: 1200px;
   width: 100%;
@@ -182,7 +182,7 @@ a {
   flex: 1;
 }
 
-/* Cards & Containers */
+/* cards & containers */
 .card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-dark);
@@ -205,14 +205,14 @@ a {
   color: #ffffff;
 }
 
-/* Grid Layouts */
+/* grid layouts */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1.25rem;
 }
 
-/* Movie Card */
+/* movie card */
 .movie-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-dark);
@@ -257,7 +257,7 @@ a {
   color: var(--text-muted);
 }
 
-/* Search Box Container */
+/* search box container */
 .search-card {
   background-color: #0f0b0c;
   border: 1px solid #2a1517;
@@ -287,7 +287,7 @@ a {
   border-color: var(--brand-primary);
 }
 
-/* Form Controls */
+/* form controls */
 .form-group {
   margin-bottom: 1rem;
   display: flex;
@@ -316,7 +316,7 @@ a {
   border-color: var(--brand-primary);
 }
 
-/* Buttons */
+/* buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -362,7 +362,7 @@ a {
   font-size: 0.75rem;
 }
 
-/* Genre Chips */
+/* genre chips */
 .genre-chips {
   display: flex;
   flex-wrap: wrap;
@@ -393,7 +393,7 @@ a {
   border-color: var(--brand-primary);
 }
 
-/* Admin Sidebar Layout */
+/* admin sidebar layout */
 .admin-layout {
   display: flex;
   gap: 2rem;
@@ -443,7 +443,7 @@ a {
   flex: 1;
 }
 
-/* Transaction Card Row */
+/* transaction card row */
 .booking-tx-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-dark);
@@ -489,7 +489,7 @@ a {
   color: #ffffff;
 }
 
-/* Badges */
+/* badges */
 .badge {
   display: inline-block;
   padding: 0.2rem 0.5rem;
@@ -515,7 +515,7 @@ a {
   color: #fca5a5;
 }
 
-/* Seat Grid */
+/* seat grid */
 .seat {
   width: 28px;
   height: 28px;
@@ -552,7 +552,7 @@ a {
   opacity: 0.5;
 }
 
-/* Tables */
+/* tables */
 .table-container {
   width: 100%;
   overflow-x: auto;

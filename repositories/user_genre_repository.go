@@ -18,7 +18,7 @@ func NewUserGenreRepository(db *gorm.DB) *UserGenreRepository {
 	}
 }
 
-// GetByUserID returns all favorite genres selected by the user.
+// getByUserID returns all favorite genres selected by the user
 func (r *UserGenreRepository) GetByUserID(userID uint) ([]models.Genre, error) {
 	var genres []models.Genre
 
@@ -30,7 +30,7 @@ func (r *UserGenreRepository) GetByUserID(userID uint) ([]models.Genre, error) {
 	return genres, err
 }
 
-// AddGenre adds a genre to the user's favorite genres.
+// addGenre adds a genre to the user's favorite genres
 func (r *UserGenreRepository) AddGenre(userID uint, tmdbGenreID int) error {
 	var user models.User
 	if err := r.db.First(&user, userID).Error; err != nil {
@@ -42,7 +42,7 @@ func (r *UserGenreRepository) AddGenre(userID uint, tmdbGenreID int) error {
 		return err
 	}
 
-	// Check if the user already has this genre as a favorite.
+	// check if the user already has this genre as a favorite
 	var count int64
 
 	err := r.db.
@@ -63,7 +63,7 @@ func (r *UserGenreRepository) AddGenre(userID uint, tmdbGenreID int) error {
 		Append(&genre)
 }
 
-// RemoveGenre removes a genre from the user's favorite genres.
+// removeGenre removes a genre from the user's favorite genres
 func (r *UserGenreRepository) RemoveGenre(userID uint, tmdbGenreID int) error {
 	var user models.User
 	if err := r.db.First(&user, userID).Error; err != nil {

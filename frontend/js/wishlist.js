@@ -1,4 +1,4 @@
-/* Wishlist & Watched Views Controller with Explicit Route Links & 90+ Min Filter */
+/* wishlist & watched views controller with explicit route links & 90+ min filter */
 
 async function renderWishlist(container) {
   if (!API.getToken()) {
@@ -9,12 +9,12 @@ async function renderWishlist(container) {
   container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading wishlist...</div>';
 
   try {
-    // GET /wishlist returns array of WishlistItemResponse { movie: models.Movie, tmdb_id, added_at }
+    // get /wishlist returns array of wishlist item response
     const items = await API.get('/wishlist');
     const filteredItems = (items || []).filter(item => {
       const m = item.movie || item;
       const dur = m.duration || m.runtime || 0;
-      return dur === 0 || dur >= 90; // Filter out movies under 90 mins
+      return dur === 0 || dur >= 90; // filter out movies under 90 mins
     });
 
     container.innerHTML = `
@@ -34,7 +34,7 @@ async function renderWishlist(container) {
             const durationStr = m.duration ? `${m.duration} mins` : (m.runtime ? `${m.runtime} mins` : '');
             const langStr = (m.language || 'EN').toUpperCase();
 
-            // Wishlist items represent TMDB items, navigate explicitly to #/tmdb/<tmdb_id>
+            // wishlist items represent tmdb items, navigate explicitly to #/tmdb/<tmdb_id>
             return `
               <a href="#/tmdb/${tmdbId}" class="movie-card">
                 <img src="${poster}" alt="${title}" class="movie-poster" loading="lazy" />
@@ -68,12 +68,12 @@ async function renderWatched(container) {
   container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading watched list...</div>';
 
   try {
-    // GET /watched returns array of WatchedMovieItemResponse { movie: models.Movie, tmdb_id, rating, review, watched_at }
+    // get /watched returns array of watched movie item response
     const items = await API.get('/watched');
     const filteredItems = (items || []).filter(item => {
       const m = item.movie || item;
       const dur = m.duration || m.runtime || 0;
-      return dur === 0 || dur >= 90; // Filter out movies under 90 mins
+      return dur === 0 || dur >= 90; // filter out movies under 90 mins
     });
 
     container.innerHTML = `
@@ -88,7 +88,7 @@ async function renderWatched(container) {
             const rating = item.rating || '';
             const review = item.review || '';
 
-            // Watched items represent TMDB items, navigate explicitly to #/tmdb/<tmdb_id>
+            // watched items represent tmdb items, navigate explicitly to #/tmdb/<tmdb_id>
             const route = `#/tmdb/${tmdbId}`;
 
             const poster = posterPath
@@ -110,7 +110,7 @@ async function renderWatched(container) {
           }).join('')}
         </div>
 
-        <!-- Medium Sized Dialogue Box Modal -->
+        <!-- medium sized dialogue box modal -->
         <div id="watched-dialog-overlay" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 300; align-items: center; justify-content: center; padding: 1.5rem;">
           <div class="card" style="width: 100%; max-width: 480px; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); padding: 1.75rem;">
             
@@ -151,7 +151,7 @@ async function renderWatched(container) {
       `}
     `;
 
-    // Attach Poster Click Handlers to Open Dialogue Modal
+    // attach poster click handlers to open dialogue modal
     const overlay = document.getElementById('watched-dialog-overlay');
     const dialogForm = document.getElementById('form-dialog-watched');
     const cancelBtn = document.getElementById('btn-dialog-cancel');

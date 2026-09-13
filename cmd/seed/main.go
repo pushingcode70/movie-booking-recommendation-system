@@ -20,7 +20,7 @@ import (
 
 const (
 	workerCount = 4
-	movieLimit  = 20000 //numberof movies sorted top in file here 20k
+	movieLimit  = 20000 // number of movies sorted top in file (20k)
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 
 	filePath := os.Args[1]
 
-	// Read the TMDB daily export.
+	// read tmdb daily export
 	movies, err := seed.ReadMovieExport(filePath)
 	if err != nil {
 		log.Fatal("failed to read TMDB export: ", err)
@@ -41,7 +41,7 @@ func main() {
 
 	config.LoadConfig()
 
-	// Select the most popular movies for the recommendation catalogue.
+	// select most popular movies for recommendation catalogue
 	seedMovies := seed.SelectTopMoviesByPopularity(movies, movieLimit)
 
 	fmt.Println("Selected seed movies:", len(seedMovies))
@@ -77,7 +77,7 @@ func main() {
 
 			for tmdbID := range jobs {
 
-				// Skip if the movie and its embedding already exist.
+				// skip if movie and embedding already exist
 				existingMovie, movieErr := movieRepo.GetMovieByTMDBID(tmdbID)
 
 				_, embeddingErr := embeddingRepo.GetByTMDBID(tmdbID)
@@ -97,7 +97,7 @@ func main() {
 					continue
 				}
 
-				// Get movie metadata, genres and credits in one TMDB request.
+				// get movie metadata, genres and credits in one tmdb request
 				tmdbMovie, err := tmdbService.GetMovieDetails(tmdbID)
 				if err != nil {
 					mu.Lock()
@@ -114,7 +114,7 @@ func main() {
 					continue
 				}
 
-				// Extract director.
+				// extract director
 				var director string
 
 				if tmdbMovie.Credits != nil {
@@ -126,7 +126,7 @@ func main() {
 					}
 				}
 
-				// Extract up to five cast members.
+				// extract up to five cast members
 				var castMembers []string
 
 				if tmdbMovie.Credits != nil {
@@ -141,7 +141,7 @@ func main() {
 
 				cast := strings.Join(castMembers, ", ")
 
-				// Build the local movie model.
+				// build local movie model
 				movie := &models.Movie{
 					TMDBID:       tmdbMovie.ID,
 					Title:        tmdbMovie.Title,
@@ -162,7 +162,7 @@ func main() {
 					})
 				}
 
-				// Create the movie if it does not already exist.
+				// create movie if it does not exist
 				if movieErr != nil {
 					if err := movieRepo.CreateMovie(movie); err != nil {
 						mu.Lock()
@@ -180,7 +180,7 @@ func main() {
 					}
 				}
 
-				// Generate the embedding from the same TMDB response.
+				// generate embedding from tmdb response
 				text := embeddingService.BuildMovieText(tmdbMovie)
 
 				embedding, err := embeddingService.GenerateEmbedding(text)
@@ -199,7 +199,7 @@ func main() {
 					continue
 				}
 
-				// Create the embedding if it does not already exist.
+				// create embedding if it does not exist
 				if embeddingErr != nil {
 					movieEmbedding := &models.MovieEmbedding{
 						TMDBID:    tmdbID,

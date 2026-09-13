@@ -1,6 +1,6 @@
 package dto
 
-// Login
+// login
 
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email"`
@@ -11,33 +11,33 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
-// Verify Email OTP
+// verify email otp
 
 type VerifyOTPRequest struct {
 	Email string `json:"email" binding:"required,email"`
 	OTP   string `json:"otp" binding:"required"`
 }
 
-// Resend verification OTP
+// resend verification otp
 
 type ResendOTPRequest struct {
 	Email string `json:"email" binding:"required,email"`
 }
 
-// Forgot Password
+// forgot password
 
 type ForgotPasswordRequest struct {
 	Email string `json:"email" binding:"required,email"`
 }
 
-// Reset Password
+// reset password
 type ResetPasswordRequest struct {
 	Email       string `json:"email" binding:"required,email"`
 	OTP         string `json:"otp" binding:"required"`
 	NewPassword string `json:"new_password" binding:"required,min=6"`
 }
 
-// Register
+// register
 type RegisterRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`

@@ -14,16 +14,14 @@ type UserHandler struct {
 	service *services.UserService
 }
 
-// constructor
 func NewUserHandler(service *services.UserService) *UserHandler {
 	return &UserHandler{
 		service: service,
 	}
 }
 
-// getmyprofile of currently logged in user
 func (h *UserHandler) GetMyProfile(c *gin.Context) {
-	//get authenticated user's id from jwt claims stores in gin's context.
+	// get authenticated user's id from jwt claims stored in gin's context
 	userID, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -32,10 +30,7 @@ func (h *UserHandler) GetMyProfile(c *gin.Context) {
 		return
 	}
 
-	//call service to fetch the user's details
-	// c.Get() returns an interface{}.
-	// The value is type-asserted to its actual type and converted to uint,
-	// because GetUserByID expects a uint ID.
+	// call service to fetch user details
 	user, err := h.service.GetUserByID(userID.(uint))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -47,10 +42,9 @@ func (h *UserHandler) GetMyProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// UpdateMyProfile updates the currently logged-in user's profile.
 func (h *UserHandler) UpdateMyProfile(c *gin.Context) {
 
-	// Get the authenticated user's ID from the Gin context.
+	// get authenticated user's ID from gin context
 	userID, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -61,7 +55,7 @@ func (h *UserHandler) UpdateMyProfile(c *gin.Context) {
 
 	var req dto.UpdateUserRequest
 
-	// Bind the updated data from the request body.
+	// bind updated data from request body
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -75,10 +69,7 @@ func (h *UserHandler) UpdateMyProfile(c *gin.Context) {
 		Email: req.Email,
 	}
 
-	// Always use the authenticated user's ID.
-	// Never trust an ID sent by the client.
-
-	// Update the user.
+	// update user profile
 	if err := h.service.UpdateUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

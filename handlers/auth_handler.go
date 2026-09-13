@@ -11,19 +11,17 @@ type AuthHandler struct {
 	service *services.AuthService
 }
 
-// constructor
 func NewAuthHandler(service *services.AuthService) *AuthHandler {
 	return &AuthHandler{
 		service: service,
 	}
 }
 
-// Login
 func (h *AuthHandler) Login(c *gin.Context) {
 
 	var req dto.LoginRequest
 
-	//read json request
+	// read json request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -31,7 +29,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	//call service
+	// call service
 	token, err := h.service.Login(req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -40,7 +38,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	//login successful
+	// login successful
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
@@ -50,7 +48,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	var req dto.RegisterRequest
 
-	// Read and validate JSON request.
+	// read and validate json request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -58,7 +56,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	// Call the service.
+	// call service
 	err := h.service.Register(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -67,7 +65,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	// Registration successful.
+	// registration successful
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Registration successful. Please verify your email using the OTP sent to your inbox.",
 	})
@@ -101,7 +99,7 @@ func (h *AuthHandler) ResendOTP(c *gin.Context) {
 
 	var req dto.ResendOTPRequest
 
-	// Read and validate JSON request.
+	// read and validate json request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -109,7 +107,7 @@ func (h *AuthHandler) ResendOTP(c *gin.Context) {
 		return
 	}
 
-	// Call the service.
+	// call service
 	err := h.service.ResendOTP(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -118,7 +116,7 @@ func (h *AuthHandler) ResendOTP(c *gin.Context) {
 		return
 	}
 
-	// OTP sent successfully.
+	// otp sent successfully
 	c.JSON(http.StatusOK, gin.H{
 		"message": "OTP sent successfully.",
 	})
@@ -128,7 +126,7 @@ func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 
 	var req dto.ForgotPasswordRequest
 
-	// Read and validate JSON request.
+	// read and validate json request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -136,7 +134,7 @@ func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	// Call the service.
+	// call service
 	err := h.service.ForgotPassword(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -145,7 +143,7 @@ func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	// Password reset OTP sent.
+	// password reset otp sent
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Password reset OTP sent successfully.",
 	})
@@ -155,7 +153,7 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 
 	var req dto.ResetPasswordRequest
 
-	// Read and validate JSON request.
+	// read and validate json request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -163,7 +161,7 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 		return
 	}
 
-	// Call the service.
+	// call service
 	err := h.service.ResetPassword(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -172,7 +170,7 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 		return
 	}
 
-	// Password reset successful.
+	// password reset successful
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Password reset successfully.",
 	})

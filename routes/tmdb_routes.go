@@ -6,19 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterTMDBRoutes registers all TMDb routes.
+// registerTMDBRoutes registers all tmdb routes
 func RegisterTMDBRoutes(router *gin.Engine, handler *handlers.TMDBHandler, authMiddleware gin.HandlerFunc, adminMiddleware gin.HandlerFunc) {
 
 	tmdb := router.Group("/tmdb")
 	{
 
-		//search movies by title.
+		// search movies by title
 		tmdb.GET("/search", handler.SearchMovies)
 
-		//by id
+		// search by tmdb id
 		tmdb.GET("/movie/:id", handler.GetMovieDetails)
 
-		// Admin-only route to publish a TMDb movie
+		// admin-only route to publish a tmdb movie
 		tmdb.POST(
 			"/publish/:id",
 			authMiddleware,

@@ -21,7 +21,7 @@ type BookingService struct {
 }
 
 // constructor
-func NewBookingService(
+func NewBookingService( //bcz booking needs all these things
 	db *gorm.DB,
 	bookingRepo *repositories.BookingRepository,
 	bookingSeatRepo *repositories.BookingSeatRepository,
@@ -42,27 +42,22 @@ func NewBookingService(
 	}
 }
 
-// create booking
 func (s *BookingService) CreateBooking(booking *models.Booking) error {
 	return s.bookingRepo.CreateBooking(booking)
 }
 
-// get booking by id
 func (s *BookingService) GetBookingByID(id uint) (*models.Booking, error) {
 	return s.bookingRepo.GetBookingByID(id)
 }
 
-// get bookings by user
 func (s *BookingService) GetBookingsByUserID(userID uint) ([]models.Booking, error) {
 	return s.bookingRepo.GetBookingsByUserID(userID)
 }
 
-// confirm booking
 func (s *BookingService) ConfirmBooking(id uint) error {
 	return s.bookingRepo.UpdateStatus(id, "CONFIRMED")
 }
 
-// cancel booking
 func (s *BookingService) CancelBooking(id uint) error {
 	return s.db.Transaction(func(tx *gorm.DB) error {
 
@@ -133,7 +128,7 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 
 		// calculate total amount
 		totalAmount := show.Price * float64(len(seats))
-		
+
 		// create booking
 		booking := &models.Booking{
 			UserID:      userID,
@@ -178,7 +173,10 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			return err
 		}
 
-		// extract the razorpay order id from response map
+		// extract the Razorpay Order ID from the response map.
+		// the razorpay sdk returns a map[string]interface{}... so order["id"] has type interface
+		// use a type assertion (.(string)) to convert it to a string before storing it.
+
 		orderID, ok := order["id"].(string)
 		if !ok || orderID == "" {
 			return errors.New("invalid razorpay order id")

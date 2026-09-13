@@ -1,4 +1,4 @@
-/* Authentication Controller with 5-Minute OTP Countdown Timer */
+/* authentication controller with 5-minute otp countdown timer */
 
 let otpTimerInterval = null;
 
@@ -123,7 +123,7 @@ function renderSignup(container) {
 }
 
 function renderVerifyOTP(container) {
-  // Clear any existing countdown timer
+  // clear any existing countdown timer
   if (otpTimerInterval) {
     clearInterval(otpTimerInterval);
     otpTimerInterval = null;
@@ -139,7 +139,7 @@ function renderVerifyOTP(container) {
         Enter the 6-digit OTP sent to your registered email address
       </p>
 
-      <!-- 10-Minute Timer Display -->
+      <!-- 10-minute timer display -->
       <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border-dark);">
         <div style="font-size: 0.75rem; color: var(--text-muted);">OTP Expires In</div>
         <div id="otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); font-family: monospace; margin-top: 0.1rem;">10:00</div>
@@ -171,7 +171,7 @@ function renderVerifyOTP(container) {
     </div>
   `;
 
-  // Timer Implementation (600 seconds = 10 minutes)
+  // timer implementation (600 seconds = 10 minutes)
   function startOTPTimer(seconds) {
     if (otpTimerInterval) clearInterval(otpTimerInterval);
 
@@ -206,7 +206,7 @@ function renderVerifyOTP(container) {
     otpTimerInterval = setInterval(updateDisplay, 1000);
   }
 
-  // Start 10-minute timer (600s) on render
+  // start 10-minute timer (600s) on render
   startOTPTimer(600);
 
   document.getElementById('form-otp').addEventListener('submit', async (e) => {
@@ -247,7 +247,7 @@ function renderVerifyOTP(container) {
       await API.post('/auth/resend-otp', { email });
       successDiv.textContent = 'A new 6-digit OTP has been sent to your email.';
       successDiv.classList.remove('hidden');
-      // Restart 10-minute timer from 10:00 (600s)
+      // restart 10-minute timer from 10:00 (600s)
       startOTPTimer(600);
     } catch (err) {
       errorDiv.textContent = err.message || 'Failed to resend OTP.';
@@ -317,7 +317,7 @@ function renderResetPassword(container) {
         Enter the 6-digit OTP sent to your registered email address
       </p>
 
-      <!-- 10-Minute Timer Display -->
+      <!-- 10-minute timer display -->
       <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border-dark);">
         <div style="font-size: 0.75rem; color: var(--text-muted);">Reset OTP Expires In</div>
         <div id="reset-otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); font-family: monospace; margin-top: 0.1rem;">10:00</div>
@@ -354,7 +354,7 @@ function renderResetPassword(container) {
     </div>
   `;
 
-  // Timer Implementation (600 seconds = 10 minutes)
+  // timer implementation (600 seconds = 10 minutes)
   function startResetOTPTimer(seconds) {
     if (otpTimerInterval) clearInterval(otpTimerInterval);
 
@@ -389,7 +389,7 @@ function renderResetPassword(container) {
     otpTimerInterval = setInterval(updateDisplay, 1000);
   }
 
-  // Start 10-minute countdown timer (600s) on render
+  // start 10-minute countdown timer (600s) on render
   startResetOTPTimer(600);
 
   document.getElementById('form-reset').addEventListener('submit', async (e) => {
@@ -431,7 +431,7 @@ function renderResetPassword(container) {
       await API.post('/auth/forgot-password', { email });
       successDiv.textContent = 'A new password reset OTP has been sent to your email.';
       successDiv.classList.remove('hidden');
-      // Restart 10-minute timer from 10:00 (600s)
+      // restart 10-minute timer from 10:00 (600s)
       startResetOTPTimer(600);
     } catch (err) {
       errorDiv.textContent = err.message || 'Failed to resend reset OTP.';

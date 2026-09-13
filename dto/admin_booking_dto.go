@@ -2,8 +2,7 @@ package dto
 
 import "time"
 
-// AdminRecentBookingResponse represents a booking
-// displayed in the admin dashboard.
+// adminRecentBookingResponse represents a booking displayed in the admin dashboard
 type AdminRecentBookingResponse struct {
 	BookingID     uint      `json:"booking_id"`
 	CustomerName  string    `json:"customer_name"`

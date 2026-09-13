@@ -15,7 +15,7 @@ type RazorpayService struct {
 	client *razorpay.Client
 }
 
-// NewRazorpayService creates a new Razorpay client.//constructor
+// constructor
 func NewRazorpayService() *RazorpayService {
 
 	keyID := config.AppConfig.RazorpayKeyID
@@ -28,8 +28,7 @@ func NewRazorpayService() *RazorpayService {
 	}
 }
 
-// CreateOrder creates a new Razorpay Order.
-// Razorpay expects the smallest currency unit (paise),
+// createOrder creates a new razorpay order
 func (s *RazorpayService) CreateOrder(amount float64) (map[string]interface{}, error) {
 
 	amountInPaise := int(amount * 100)
@@ -49,21 +48,21 @@ func (s *RazorpayService) CreateOrder(amount float64) (map[string]interface{}, e
 	return order, nil
 }
 
-// "Did this payment confirmation really come from Razorpay, or did someone fake it?"
+// verifyPaymentSignature checks if payment confirmation really came from razorpay
 func (s *RazorpayService) VerifyPaymentSignature(orderID, paymentID, signature string) bool {
-	//razorpay generates  the signature using "order_id|payment_id"
+	// razorpay generates the signature using "order_id|payment_id"
 	body := orderID + "|" + paymentID
 
-	// Create an HMAC-SHA256 hasher using the Razorpay secret key
+	// create an hmac-sha256 hasher using the razorpay secret key
 	h := hmac.New(sha256.New, []byte(config.AppConfig.RazorpayKeySecret))
 
-	// Hash the message (order_id|payment_id)
+	// hash the message (order_id|payment_id)
 	h.Write([]byte(body))
 
-	// Generate the expected signature in hexadecimal format
+	// generate expected signature in hexadecimal format
 	expectedSignature := hex.EncodeToString(h.Sum(nil))
 
-	// Securely compare the expected signature with the one received from Razorpay
+	// securely compare expected signature with the one received from razorpay
 	return hmac.Equal(
 		[]byte(expectedSignature),
 		[]byte(signature),
