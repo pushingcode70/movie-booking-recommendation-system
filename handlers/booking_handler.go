@@ -13,21 +13,20 @@ type BookingHandler struct {
 	service *services.BookingService
 }
 
-// Constructor
+// constructor
 func NewBookingHandler(service *services.BookingService) *BookingHandler {
 	return &BookingHandler{
 		service: service,
 	}
 }
 
-// Create Booking
+// create booking
 func (h *BookingHandler) CreateBooking(c *gin.Context) {
 
-	// DTO to receive only the fields the client is allowed to send.
-	// We don't bind directly to the Booking model for security reasons.
+	// dto to receive only fields client is allowed to send
 	var req dto.CreateBookingRequest
 
-	// Read and validate JSON request body.
+	// read and validate json request body
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -35,8 +34,7 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	// Get the authenticated user's ID from Gin's context.
-	// The AuthMiddleware stored it there after validating the JWT.
+	// get authenticated user id from gin context
 	userIDValue, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -45,10 +43,10 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	// JWT MapClaims stores numeric values as float64.
-	// Convert it back to uint before passing it to the service.
+	// convert user id back to uint
 	userID := userIDValue.(uint)
-	// Call the service, which contains all booking business logic.
+
+	// call service for booking logic
 	response, err := h.service.BookService(userID, &req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -56,8 +54,9 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 		})
 		return
 	}
-	// Return the created booking.
-	c.JSON(http.StatusCreated, response) //response is of type *dto.BookingResponse
+
+	// return created booking response
+	c.JSON(http.StatusCreated, response)
 }
 
 func (h *BookingHandler) GetBookingByID(c *gin.Context) {
@@ -126,7 +125,7 @@ func (h *BookingHandler) GetBookingsByUserID(c *gin.Context) {
 	c.JSON(http.StatusOK, bookings)
 }
 
-// confirm Booking
+// confirm booking
 func (h *BookingHandler) ConfirmBooking(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -144,7 +143,7 @@ func (h *BookingHandler) ConfirmBooking(c *gin.Context) {
 	})
 }
 
-// cancel Booking
+// cancel booking
 func (h *BookingHandler) CancelBooking(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

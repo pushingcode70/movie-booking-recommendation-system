@@ -17,7 +17,7 @@ type AuthService struct {
 	emailService *EmailService
 }
 
-// Constructor
+// constructor
 func NewAuthService(repo *repositories.UserRepository, emailService *EmailService) *AuthService {
 	return &AuthService{
 		repo:         repo,
@@ -31,18 +31,18 @@ func (s *AuthService) Login(email, password string) (string, error) {
 		return "", errors.New("invalid email or password")
 	}
 
-	// Verify password.
+	// verify password
 	err = utils.CheckPassword(password, user.Password)
 	if err != nil {
 		return "", errors.New("invalid email or password")
 	}
 
-	// Prevent unverified users from logging in.
+	// prevent unverified users from logging in
 	if !user.IsVerified {
 		return "", errors.New("please verify your email before logging in")
 	}
 
-	// Generate JWT.
+	// generate jwt
 	token, err := utils.GenerateToken(user.ID, user.Role)
 	if err != nil {
 		return "", err
@@ -53,13 +53,13 @@ func (s *AuthService) Login(email, password string) (string, error) {
 
 func (s *AuthService) Register(req dto.RegisterRequest) error {
 
-	// Check if the email is already registered.
+	// check if the email is already registered
 	existingUser, err := s.repo.GetUserByEmail(req.Email)
 
 	if err == nil && existingUser != nil {
 		if !existingUser.IsVerified {
-			// Account exists but is not verified yet.
-			// Update credentials, generate fresh OTP, and send verification email.
+			// account exists but is not verified yet
+			// update credentials, generate fresh otp, and send verification email
 			hashedPassword, err := utils.HashPassword(req.Password)
 			if err != nil {
 				return err
@@ -88,20 +88,20 @@ func (s *AuthService) Register(req dto.RegisterRequest) error {
 		return errors.New("email already registered")
 	}
 
-	//  Hash password before storing it
+	// hash password before storing it
 	hashedPassword, err := utils.HashPassword(req.Password)
 
 	if err != nil {
 		return err
 	}
 
-	//  Generate OTP
+	// generate otp
 	otp := fmt.Sprintf("%06d", rand.Intn(1000000))
 
-	//otp expired after ten minutes
+	// otp expires after ten minutes
 	expiry := time.Now().Add(10 * time.Minute)
 
-	//  Create user
+	// create user
 	user := models.User{
 		Name:         req.Name,
 		Email:        req.Email,
@@ -112,12 +112,12 @@ func (s *AuthService) Register(req dto.RegisterRequest) error {
 		OTPExpiresAt: &expiry,
 	}
 
-	//  Save user
+	// save user
 	err = s.repo.CreateUser(&user)
 	if err != nil {
 		return err
 	}
-	// Send verification email.
+	// send verification email
 	err = s.emailService.SendVerificationOTP(dto.OTPEmailData{
 		Title:   "Verify Your Email",
 		Message: "Use the OTP below to verify your account.",
@@ -133,35 +133,35 @@ func (s *AuthService) Register(req dto.RegisterRequest) error {
 
 func (s *AuthService) VerifyOTP(req dto.VerifyOTPRequest) error {
 
-	// Find the user by email.
+	// find the user by email
 	user, err := s.repo.GetUserByEmail(req.Email)
 	if err != nil {
 		return errors.New("user not found")
 	}
 
-	// Check if the email is already verified.
+	// check if the email is already verified
 	if user.IsVerified {
 		return errors.New("email already verified")
 	}
 
-	// Verify the OTP.
+	// verify the otp
 	if user.OTPCode != req.OTP {
 		return errors.New("invalid OTP")
 	}
 
-	// Check if an OTP exists and has not expired.
+	// check if an otp exists and has not expired
 	if user.OTPExpiresAt == nil || time.Now().After(*user.OTPExpiresAt) {
 		return errors.New("OTP has expired")
 	}
 
-	// Mark the email as verified.
+	// mark the email as verified
 	user.IsVerified = true
 
-	// Clear OTP after successful verification.
+	// clear otp after successful verification
 	user.OTPCode = ""
 	user.OTPExpiresAt = nil
 
-	// Save the updated user.
+	// save the updated user
 	err = s.repo.UpdateUser(user)
 	if err != nil {
 		return err
@@ -173,24 +173,24 @@ func (s *AuthService) VerifyOTP(req dto.VerifyOTPRequest) error {
 // resend otp
 func (s *AuthService) ResendOTP(req dto.ResendOTPRequest) error {
 
-	// Find the user by email.
+	// find the user by email
 	user, err := s.repo.GetUserByEmail(req.Email)
 	if err != nil {
 		return errors.New("user not found")
 	}
 
-	// Check if the email is already verified.
+	// check if the email is already verified
 	if user.IsVerified {
 		return errors.New("email is already verified")
 	}
 
-	// Generate a new 6-digit OTP.
+	// generate a new 6-digit otp
 	otp := fmt.Sprintf("%06d", rand.Intn(1000000))
 
-	// OTP expires after 10 minutes.
+	// otp expires after 10 minutes
 	expiry := time.Now().Add(10 * time.Minute)
 
-	// Update the user's OTP.
+	// update the user's otp
 	user.OTPCode = otp
 	user.OTPExpiresAt = &expiry
 
@@ -199,7 +199,7 @@ func (s *AuthService) ResendOTP(req dto.ResendOTPRequest) error {
 		return err
 	}
 
-	// Send the verification email.
+	// send the verification email
 	err = s.emailService.SendVerificationOTP(dto.OTPEmailData{
 		Title:   "Verify Your Email",
 		Message: "Use the OTP below to verify your account.",
@@ -213,34 +213,22 @@ func (s *AuthService) ResendOTP(req dto.ResendOTPRequest) error {
 	return nil
 }
 
-// ForgotPassword starts the password reset process.
-//
-// Flow:
-// 1. User clicks "Forgot Password?" on the login page.
-// 2. User enters their email address.
-// 3. Backend verifies that the account exists.
-// 4. Backend generates and stores a temporary OTP.
-// 5. Backend emails the OTP to the user.
-//
-// The password is NOT changed here.
-// The actual password update happens later in ResetPassword(),
-// after the user submits the OTP and a new password.
-
+// forgot password generates and emails a temporary otp for password reset
 func (s *AuthService) ForgotPassword(req dto.ForgotPasswordRequest) error {
 
-	// Find the user by email.
+	// find the user by email
 	user, err := s.repo.GetUserByEmail(req.Email)
 	if err != nil {
 		return errors.New("user not found")
 	}
 
-	// Generate a new 6-digit OTP.
+	// generate a new 6-digit otp
 	otp := fmt.Sprintf("%06d", rand.Intn(1000000))
 
-	// OTP expires after 10 minutes.
+	// otp expires after 10 minutes
 	expiry := time.Now().Add(10 * time.Minute)
 
-	// Save the new OTP.
+	// save the new otp
 	user.OTPCode = otp
 	user.OTPExpiresAt = &expiry
 
@@ -249,7 +237,7 @@ func (s *AuthService) ForgotPassword(req dto.ForgotPasswordRequest) error {
 		return err
 	}
 
-	// Send password reset OTP email.
+	// send password reset otp email
 	err = s.emailService.SendVerificationOTP(dto.OTPEmailData{
 		Title:   "Reset Your Password",
 		Message: "Use the OTP below to reset your password.",
@@ -265,36 +253,36 @@ func (s *AuthService) ForgotPassword(req dto.ForgotPasswordRequest) error {
 
 func (s *AuthService) ResetPassword(req dto.ResetPasswordRequest) error {
 
-	// Find the user by email.
+	// find the user by email
 	user, err := s.repo.GetUserByEmail(req.Email)
 	if err != nil {
 		return errors.New("user not found")
 	}
 
-	// Verify the OTP.
+	// verify the otp
 	if user.OTPCode != req.OTP {
 		return errors.New("invalid OTP")
 	}
 
-	// Check if the OTP has expired.
+	// check if the otp has expired
 	if user.OTPExpiresAt == nil || time.Now().After(*user.OTPExpiresAt) {
 		return errors.New("OTP has expired")
 	}
 
-	// Hash the new password.
+	// hash the new password
 	hashedPassword, err := utils.HashPassword(req.NewPassword)
 	if err != nil {
 		return err
 	}
 
-	// Update the password.
+	// update the password
 	user.Password = hashedPassword
 
-	// Clear the OTP.
+	// clear the otp
 	user.OTPCode = ""
 	user.OTPExpiresAt = nil
 
-	// Save the updated user.
+	// save the updated user
 	err = s.repo.UpdateUser(user)
 	if err != nil {
 		return err

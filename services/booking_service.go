@@ -20,8 +20,8 @@ type BookingService struct {
 	razorpayService *RazorpayService
 }
 
-// Constructor
-func NewBookingService( //bcz booking needs all these things
+// constructor
+func NewBookingService(
 	db *gorm.DB,
 	bookingRepo *repositories.BookingRepository,
 	bookingSeatRepo *repositories.BookingSeatRepository,
@@ -42,17 +42,17 @@ func NewBookingService( //bcz booking needs all these things
 	}
 }
 
-// Create Booking
+// create booking
 func (s *BookingService) CreateBooking(booking *models.Booking) error {
 	return s.bookingRepo.CreateBooking(booking)
 }
 
-// Get Booking By ID
+// get booking by id
 func (s *BookingService) GetBookingByID(id uint) (*models.Booking, error) {
 	return s.bookingRepo.GetBookingByID(id)
 }
 
-// Get Bookings By User
+// get bookings by user
 func (s *BookingService) GetBookingsByUserID(userID uint) ([]models.Booking, error) {
 	return s.bookingRepo.GetBookingsByUserID(userID)
 }
@@ -90,38 +90,38 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 
 	err := s.db.Transaction(func(tx *gorm.DB) error {
 
-		// Use transaction-aware repositories
+		// use transaction-aware repositories
 		bookingRepo := s.bookingRepo.WithTx(tx)
 		bookingSeatRepo := s.bookingSeatRepo.WithTx(tx)
 		paymentRepo := s.paymentRepo.WithTx(tx)
 		showRepo := s.showRepo.WithTx(tx)
 		seatRepo := s.seatRepo.WithTx(tx)
 
-		//Validate Show
-		show, err := showRepo.GetShowByID(req.ShowID) //req is a pointer to a CreateBookingRequest object.and it will access the DTO
+		// validate show
+		show, err := showRepo.GetShowByID(req.ShowID)
 		if err != nil {
 			return err
 		}
 
-		//  Validate Seats
+		// validate seats
 		seats, err := seatRepo.GetSeatByIDs(req.SeatIDs)
 		if err != nil {
 			return err
 		}
 
-		//Make sure every requested seat exists
-		if len(seats) != len(req.SeatIDs) { //supose you request or client 1,2,3,4 ie req.seatIDs and db only has 1,2,3 so one returns lenth 4 and other 3 so not equal so its error
+		// make sure every requested seat exists
+		if len(seats) != len(req.SeatIDs) {
 			return errors.New("one or more seats are not found")
 		}
 
-		// Make sure every seat belongs to this show's screen
+		// make sure every seat belongs to this show's screen
 		for _, seat := range seats {
 			if seat.ScreenID != show.ScreenID {
 				return errors.New("seat belongs to another screen")
 			}
 		}
 
-		// Check whether any requested seat is already booked
+		// check whether any requested seat is already booked
 		bookedSeatIDs, err := bookingSeatRepo.GetBookedSeatIDs(show.ID, req.SeatIDs)
 		if err != nil {
 			return err
@@ -131,9 +131,10 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			return errors.New("one or more seats are already booked")
 		}
 
-		// 3. Calculate Total Amount
+		// calculate total amount
 		totalAmount := show.Price * float64(len(seats))
-		// 4. Create Booking
+		
+		// create booking
 		booking := &models.Booking{
 			UserID:      userID,
 			ShowID:      show.ID,
@@ -146,7 +147,7 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			return err
 		}
 
-		// 5. Create BookingSeat records
+		// create bookingseat records
 		for _, seatID := range req.SeatIDs {
 			bookingSeat := &models.BookingSeat{
 				BookingID: booking.ID,
@@ -159,7 +160,7 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			}
 		}
 
-		// 6. Create Payment
+		// create payment
 		payment := &models.Payment{
 			BookingID:     booking.ID,
 			Amount:        totalAmount,
@@ -177,10 +178,7 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			return err
 		}
 
-		// Extract the Razorpay Order ID from the response map.
-		// The Razorpay SDK returns a map[string]interface{}, so order["id"] has type interface{}.
-		// Use a type assertion (.(string)) to convert it to a string before storing it.
-
+		// extract the razorpay order id from response map
 		orderID, ok := order["id"].(string)
 		if !ok || orderID == "" {
 			return errors.New("invalid razorpay order id")
@@ -193,7 +191,7 @@ func (s *BookingService) BookService(userID uint, req *dto.CreateBookingRequest)
 			return err
 		}
 
-		// 7. Return Response
+		// return response
 		response = &dto.BookingResponse{
 			ID:              booking.ID,
 			ShowID:          booking.ShowID,
