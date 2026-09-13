@@ -112,8 +112,6 @@ Update .env with:
 - JWT secret
 - Embedding service URL
 
-Do not commit .env.
-
 ## Embedding Service
 
 The recommendation system uses:
@@ -182,8 +180,6 @@ http://localhost:8000
 GORM automatically creates/migrates the required tables when the backend starts.
 
 ## Frontend
-
-The frontend does not require a build step.
 
 From the project root:
 
