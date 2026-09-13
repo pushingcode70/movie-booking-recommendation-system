@@ -1,0 +1,41 @@
+# Environment & Secrets
+.env
+.env.local
+*.env
+*.pem
+*.key
+
+# Python & Virtual Environments
+venv/
+.venv/
+embedding-service/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+# Go Binaries & Build Output
+/main
+/*.exe
+/*.so
+/*.dylib
+/*.dll
+/bin/
+
+# Seed Archives (TMDB Exports)
+*.json.gz
+
+# Local pgvector Source & Build Directory
+/pgvector/
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Machine-Specific Files
+.DS_Store
+Thumbs.db

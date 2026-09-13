@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Ticket</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .ticket {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,.15);
+        }
+
+        .header {
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            color: gray;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="ticket">
+
+    <div class="header">
+        <h2>Movie Booking Confirmation</h2>
+    </div>
+
+    <div class="content">
+
+        <p>Hello <strong>{{.CustomerName}}</strong>,</p>
+
+        <p>Your booking has been confirmed.</p>
+
+        <table>
+
+            <tr>
+                <td><strong>Booking ID</strong></td>
+                <td>{{.BookingID}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Movie</strong></td>
+                <td>{{.MovieTitle}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Theatre</strong></td>
+                <td>{{.TheatreName}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Screen</strong></td>
+                <td>{{.ScreenName}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Date</strong></td>
+                <td>{{.ShowDate}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Time</strong></td>
+                <td>{{.ShowTime}}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Seats</strong></td>
+                <td>
+                    {{range .Seats}}
+                        {{.}}&nbsp;
+                    {{end}}
+                </td>
+            </tr>
+
+            <tr>
+                <td><strong>Amount Paid</strong></td>
+                <td>₹{{.Amount}}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="footer">
+        Thank you for booking with Movie Booking.
+        <br>
+        Enjoy your show!
+    </div>
+
+</div>
+
+</body>
+
+</html>
