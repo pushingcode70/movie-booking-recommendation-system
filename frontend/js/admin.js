@@ -280,7 +280,14 @@ async function renderAdminTheatresView(viewEl) {
         try {
           await API.delete(`/screens/${id}`);
           renderAdminTheatresView(viewEl);
-        } catch (err) { alert(err.message || 'Failed to remove screen'); }
+        } catch (err) {
+          const msg = (err.message || '').toLowerCase();
+          if (msg.includes('fk_shows_screen') || msg.includes('foreign key') || msg.includes('shows')) {
+            alert(`Cannot remove Screen #${id} because shows are scheduled on it.\n\nPlease go to the Shows tab and cancel the scheduled shows for this screen first.`);
+          } else {
+            alert(err.message || 'Failed to remove screen');
+          }
+        }
       }
     }
   });
@@ -595,6 +602,8 @@ async function renderAdminShowsView(viewEl) {
   try {
     const shows = await API.get('/shows');
     const localMovies = (await API.get('/movies')) || [];
+    const screens = (await API.get('/screens')) || [];
+    const theatres = (await API.get('/theatres')) || [];
 
     if (shows && shows.length > 0) {
       showsListEl.innerHTML = `
@@ -604,7 +613,7 @@ async function renderAdminShowsView(viewEl) {
               <tr>
                 <th>Show ID</th>
                 <th>Movie Title</th>
-                <th>Screen ID</th>
+                <th>Theatre & Screen</th>
                 <th>Start Time</th>
                 <th>Ticket Price</th>
                 <th>Action</th>
@@ -616,11 +625,17 @@ async function renderAdminShowsView(viewEl) {
                 const m = localMovies.find(pm => pm.id === s.movie_id);
                 const title = m ? m.title : (s.movie ? s.movie.title : `Movie #${s.movie_id}`);
 
+                const scr = screens.find(sc => sc.id === s.screen_id);
+                const th = scr ? theatres.find(t => t.id === scr.theatre_id) : null;
+                const theatreName = th ? th.name : 'Theatre';
+                const screenNumStr = scr ? (scr.screen_number ? `Screen ${scr.screen_number}` : `Screen #${scr.id}`) : `Screen #${s.screen_id}`;
+                const theatreScreenDisplay = `${theatreName} (${screenNumStr})`;
+
                 return `
                   <tr>
                     <td style="font-weight: 700;">#${s.id}</td>
                     <td>${title}</td>
-                    <td>Screen #${s.screen_id}</td>
+                    <td>${theatreScreenDisplay}</td>
                     <td>${startTimeStr}</td>
                     <td style="color: var(--accent-emerald); font-weight: 700;">Rs. ${s.price}</td>
                     <td>

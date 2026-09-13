@@ -55,27 +55,18 @@ async function renderSeatLayout(container, params) {
       }
     } catch (e) {}
 
-    // fallback: if database has no generated seats yet, generate dynamically from screen.total_seats
-    const totalSeatsCount = screen.total_seats || screen.capacity || 60;
     if (seats.length === 0) {
-      const seatsPerRow = totalSeatsCount > 50 ? 15 : 10;
-      const rowCount = Math.ceil(totalSeatsCount / seatsPerRow);
-      let seatCounter = 1;
-
-      for (let r = 0; r < rowCount; r++) {
-        const rowLetter = String.fromCharCode(65 + r); // a, b, c...
-        for (let s = 1; s <= seatsPerRow; s++) {
-          if (seatCounter > totalSeatsCount) break;
-          seats.push({
-            id: seatCounter,
-            row: rowLetter,
-            number: s,
-            seatNumber: `${rowLetter}${s}`,
-            is_booked: false
-          });
-          seatCounter++;
-        }
-      }
+      container.innerHTML = `
+        <div style="max-width: 600px; margin: 3rem auto; text-align: center; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 3rem 2rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚠️</div>
+          <h2 style="color: #ffffff; font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">No Seats Configured</h2>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
+            There are currently no seats configured for this show screen in the database. Please contact the theatre administrator or select another showtime.
+          </p>
+          <a href="#/shows/${theatre.id || 1}" class="btn btn-secondary" style="display: inline-block;">&larr; Back to Showtimes</a>
+        </div>
+      `;
+      return;
     }
 
     selectedSeatsList = [];
