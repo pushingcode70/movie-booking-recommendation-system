@@ -197,18 +197,6 @@ Backend:
 
 http://localhost:8000
 
-## Postman
-
-The Postman collection is in:
-
-postman/
-
-Set:
-
-baseURL = http://localhost:8000
-
-Do not commit Postman environments containing secrets.
-
 ## Admin Access
 
 Register a user and assign the admin role:
