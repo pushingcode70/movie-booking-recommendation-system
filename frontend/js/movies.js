@@ -124,7 +124,7 @@ async function renderLocalMovieDetails(container, params) {
     });
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary); text-align: center;">${err.message || 'Local movie not found.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent); text-align: center;">${err.message || 'Local movie not found.'}</div>`;
   }
 }
 
@@ -240,7 +240,7 @@ async function renderTMDBMovieDetails(container, params) {
     });
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary); text-align: center;">${err.message || 'TMDB movie details not found.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent); text-align: center;">${err.message || 'TMDB movie details not found.'}</div>`;
   }
 }
 
@@ -256,31 +256,17 @@ async function renderMovieDetailsView(container, data) {
   let inWatched = !!data.inWatched;
 
   container.innerHTML = `
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
       
-      <!-- backdrop banner -->
-      ${backdrop ? `
-        <div style="width: 100%; height: 220px; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border-dark);">
-          <img src="${backdrop}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);" />
-          <div style="position: absolute; bottom: 1.5rem; left: 1.5rem; color: #ffffff;">
-            <h1 style="font-size: 2rem; font-weight: 900; line-height: 1.1; margin-bottom: 0.25rem;">${title}</h1>
-            <div style="font-size: 0.8125rem; color: #d1d5db;">
-              ${releaseYear ? releaseYear + ' • ' : ''}${runtime ? runtime + ' mins • ' : ''}${language}
-              ${voteAverage ? ' • ★ ' + voteAverage + '/10' : ''}
-            </div>
-          </div>
-        </div>
-      ` : ''}
-
       <!-- movie details card -->
-      <div class="card" style="display: flex; flex-direction: row; gap: 2rem; flex-wrap: wrap;">
-        <img src="${poster}" alt="${title}" style="width: 200px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-dark);" />
+      <div class="card" style="display: flex; flex-direction: row; gap: 1.5rem; flex-wrap: wrap;">
+        <img src="${poster}" alt="${title}" style="width: 180px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);" />
         
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.75rem; min-width: 280px;">
-          ${!backdrop ? `<h1 style="font-size: 2rem; font-weight: 800; color: #ffffff;">${title}</h1>` : ''}
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; min-width: 260px;">
+          <h1 style="font-size: 1.75rem; font-weight: 800; color: #ffffff; line-height: 1.2;">${title}</h1>
           
-          <div style="font-size: 0.84rem; color: var(--text-muted);">
-            ${releaseDate ? 'Release Date: ' + releaseDate + ' • ' : ''}${runtime ? runtime + ' mins • ' : ''}${language}
+          <div style="font-size: 0.8125rem; color: var(--muted);">
+            ${releaseDate ? 'Release: ' + releaseDate + ' • ' : ''}${runtime ? runtime + ' mins • ' : ''}${language}
             ${voteAverage ? ' • ★ ' + voteAverage + '/10' : ''}
           </div>
 
@@ -310,7 +296,7 @@ async function renderMovieDetailsView(container, data) {
 
               <!-- review / rating editor for watched movie -->
               ${inWatched ? `
-                <div class="card" style="padding: 1rem; background-color: #0a0a0a; border: 1px solid var(--border-dark);">
+                <div class="card" style="padding: 1rem; background-color: #0a0a0a; border: 1px solid var(--border);">
                   <div style="font-size: 0.84rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Your Rating & Review</div>
                   <form id="form-edit-review" style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <div style="display: flex; gap: 0.5rem; align-items: center;">

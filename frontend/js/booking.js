@@ -57,7 +57,7 @@ async function renderSeatLayout(container, params) {
 
     if (seats.length === 0) {
       container.innerHTML = `
-        <div style="max-width: 600px; margin: 3rem auto; text-align: center; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 3rem 2rem;">
+        <div style="max-width: 600px; margin: 3rem auto; text-align: center; background-color: #121212; border: 1px solid var(--border); border-radius: 12px; padding: 3rem 2rem;">
           <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚠️</div>
           <h2 style="color: #ffffff; font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">No Seats Configured</h2>
           <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
@@ -92,27 +92,26 @@ async function renderSeatLayout(container, params) {
         <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
           
           <!-- left side: seat map area -->
-          <div style="flex: 2; min-width: 320px; background-color: #0f0f0f; border: 1px solid var(--border-dark); border-radius: 12px; padding: 2rem; text-align: center;">
+          <div style="flex: 2; min-width: 320px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; text-align: center;">
             
-            <div style="font-size: 0.7rem; font-weight: 800; color: #ef4444; letter-spacing: 1px; text-transform: uppercase;">SCREEN SELECTION</div>
-            <h2 style="font-size: 1.5rem; font-weight: 900; color: #ffffff; margin-bottom: 1.5rem;">${screenName}</h2>
+            <div style="font-size: 0.7rem; font-weight: 800; color: var(--accent); letter-spacing: 1px; text-transform: uppercase;">SCREEN SELECTION</div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin-bottom: 1.25rem;">${screenName}</h2>
 
-            <!-- screen bar curved display -->
-            <div style="margin: 0 auto 2rem auto; max-width: 450px;">
-              <div style="height: 6px; background: linear-gradient(90deg, transparent, #ef4444, transparent); border-radius: 50%; box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);"></div>
-              <div style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.5rem;">ALL EYES THIS WAY</div>
+            <!-- screen bar -->
+            <div style="margin: 0 auto 1.5rem auto; max-width: 400px; padding: 0.35rem; background-color: var(--surface-light); border: 1px solid var(--border); border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: var(--muted); letter-spacing: 2px; text-transform: uppercase;">
+              SCREEN THIS WAY
             </div>
 
             <!-- legend -->
-            <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; font-size: 0.75rem; color: var(--text-muted);">
+            <div style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; font-size: 0.75rem; color: var(--muted);">
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <div style="width: 14px; height: 14px; background-color: #262626; border-radius: 3px; border: 1px solid #404040;"></div> Available
+                <div class="seat-grid-cell available" style="width: 16px; height: 16px;"></div> Available
               </div>
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <div style="width: 14px; height: 14px; background-color: #ef4444; border-radius: 3px;"></div> Selected
+                <div class="seat-grid-cell selected" style="width: 16px; height: 16px;"></div> Selected
               </div>
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <div style="width: 14px; height: 14px; background-color: #050505; border-radius: 3px; border: 1px solid #222222;"></div> Booked
+                <div class="seat-grid-cell booked" style="width: 16px; height: 16px;"></div> Booked
               </div>
             </div>
 
@@ -126,22 +125,7 @@ async function renderSeatLayout(container, params) {
                          data-id="${seat.id}" 
                          data-row="${seat.row}" 
                          data-num="${seat.number}"
-                         data-code="${seat.seatNumber}"
-                         style="
-                           width: 28px;
-                           height: 28px;
-                           border-radius: 5px;
-                           display: flex;
-                           align-items: center;
-                           justify-content: center;
-                           font-size: 0.7rem;
-                           font-weight: 700;
-                           cursor: ${seat.is_booked ? 'not-allowed' : 'pointer'};
-                           background-color: ${seat.is_booked ? '#050505' : '#262626'};
-                           color: ${seat.is_booked ? '#444444' : '#ffffff'};
-                           border: 1px solid ${seat.is_booked ? '#181818' : '#3d3d3d'};
-                           transition: transform 0.15s, background-color 0.15s;
-                         ">
+                         data-code="${seat.seatNumber}">
                       ${seat.number}
                     </div>
                   `).join('')}
@@ -152,18 +136,17 @@ async function renderSeatLayout(container, params) {
           </div>
 
           <!-- right sidebar: booking summary -->
-          <div style="flex: 1; min-width: 300px; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.5rem;">
+          <div style="flex: 1; min-width: 280px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem;">
             
-            <div style="display: flex; items-center; gap: 0.5rem; margin-bottom: 1.25rem;">
-              <span style="color: #ef4444; font-size: 1rem;">🎫</span>
-              <h2 style="font-size: 1.1rem; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; margin: 0;">BOOKING SUMMARY</h2>
+            <div style="margin-bottom: 1rem;">
+              <h2 style="font-size: 1rem; font-weight: 800; color: #ffffff; margin: 0;">BOOKING SUMMARY</h2>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.8125rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: 0.8125rem; margin-bottom: 1.25rem;">
               
               <div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.2rem;">MOVIE</div>
-                <div style="font-size: 1rem; font-weight: 800; color: #ffffff;">${movie.title}</div>
+                <div style="font-size: 0.7rem; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.1rem;">MOVIE</div>
+                <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff;">${movie.title}</div>
               </div>
 
               <div>
@@ -185,7 +168,7 @@ async function renderSeatLayout(container, params) {
 
             </div>
 
-            <hr style="border-color: var(--border-dark); margin-bottom: 1.25rem;" />
+            <hr style="border-color: var(--border); margin-bottom: 1.25rem;" />
 
             <!-- price breakdown -->
             <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8125rem; margin-bottom: 1.5rem;">
@@ -278,7 +261,7 @@ async function renderSeatLayout(container, params) {
             key: booking.razorpay_key_id,
             amount: booking.total_amount * 100,
             currency: 'INR',
-            name: 'CinePass Movie Booking',
+            name: 'Movie Booking',
             description: `Payment for Booking #${booking.id}`,
             order_id: booking.razorpay_order_id,
             handler: async function (rzpResponse) {
@@ -308,7 +291,7 @@ async function renderSeatLayout(container, params) {
     });
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load seat layout.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load seat layout.'}</div>`;
   }
 }
 
@@ -332,7 +315,7 @@ async function renderTicketConfirm(container, params) {
       </div>
     `;
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load booking.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load booking.'}</div>`;
   }
 }
 
@@ -383,7 +366,7 @@ async function renderMyBookings(container) {
       `}
     `;
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load bookings.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load bookings.'}</div>`;
   }
 }
 

@@ -55,7 +55,7 @@ async function renderWishlist(container) {
       `}
     `;
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load wishlist.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load wishlist.'}</div>`;
   }
 }
 
@@ -112,10 +112,10 @@ async function renderWatched(container) {
 
         <!-- medium sized dialogue box modal -->
         <div id="watched-dialog-overlay" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 300; align-items: center; justify-content: center; padding: 1.5rem;">
-          <div class="card" style="width: 100%; max-width: 480px; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); padding: 1.75rem;">
+          <div class="card" style="width: 100%; max-width: 480px; background-color: #121212; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); padding: 1.75rem;">
             
             <div style="display: flex; gap: 1.25rem; margin-bottom: 1.25rem; align-items: flex-start;">
-              <img id="dialog-poster" src="" alt="Movie" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-dark);" />
+              <img id="dialog-poster" src="" alt="Movie" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 1px solid var(--border);" />
               <div style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem;">
                 <h2 id="dialog-title" style="font-size: 1.25rem; font-weight: 800; color: #ffffff;">Movie Title</h2>
                 <a id="dialog-details-link" href="#" class="btn btn-secondary btn-sm" style="align-self: flex-start; margin-top: 0.5rem;">View Movie Details</a>
@@ -223,7 +223,7 @@ async function renderWatched(container) {
     }
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load watched list.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load watched list.'}</div>`;
   }
 }
 

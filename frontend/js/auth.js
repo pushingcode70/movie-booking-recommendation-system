@@ -26,13 +26,13 @@ function renderLogin(container) {
           <input type="password" id="login-password" class="form-input" required placeholder="••••••••" />
         </div>
 
-        <div id="auth-error" style="color: var(--brand-primary); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
+        <div id="auth-error" style="color: var(--accent); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
       </form>
 
       <div style="margin-top: 1.25rem; text-align: center; font-size: 0.8125rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.5rem;">
-        <div>Don't have an account? <a href="#/signup" style="color: var(--brand-primary); font-weight: 600;">Sign up</a></div>
+        <div>Don't have an account? <a href="#/signup" style="color: var(--accent); font-weight: 600;">Sign up</a></div>
         <div><a href="#/forgot-password" style="color: var(--text-muted);">Forgot Password?</a></div>
       </div>
     </div>
@@ -93,13 +93,13 @@ function renderSignup(container) {
           <input type="password" id="signup-password" class="form-input" required minlength="6" placeholder="At least 6 characters" />
         </div>
 
-        <div id="auth-error" style="color: var(--brand-primary); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
+        <div id="auth-error" style="color: var(--accent); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
       </form>
 
       <div style="margin-top: 1.25rem; text-align: center; font-size: 0.8125rem; color: var(--text-muted);">
-        Already registered? <a href="#/login" style="color: var(--brand-primary); font-weight: 600;">Login</a>
+        Already registered? <a href="#/login" style="color: var(--accent); font-weight: 600;">Login</a>
       </div>
     </div>
   `;
@@ -140,9 +140,9 @@ function renderVerifyOTP(container) {
       </p>
 
       <!-- 10-minute timer display -->
-      <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border-dark);">
+      <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border);">
         <div style="font-size: 0.75rem; color: var(--text-muted);">OTP Expires In</div>
-        <div id="otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); font-family: monospace; margin-top: 0.1rem;">10:00</div>
+        <div id="otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 0.1rem;">10:00</div>
       </div>
 
       <form id="form-otp">
@@ -156,7 +156,7 @@ function renderVerifyOTP(container) {
           <input type="text" id="otp-code" class="form-input" required placeholder="123456" maxlength="6" style="text-align: center; font-size: 1.25rem; letter-spacing: 0.25em; font-family: monospace;" />
         </div>
 
-        <div id="auth-error" style="color: var(--brand-primary); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
+        <div id="auth-error" style="color: var(--accent); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
         <div id="auth-success" style="color: var(--accent-emerald); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">Verify OTP</button>
@@ -165,7 +165,7 @@ function renderVerifyOTP(container) {
       <div style="margin-top: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
         <button id="btn-resend-otp" class="btn btn-secondary btn-sm">Resend OTP</button>
         <div style="font-size: 0.8125rem; color: var(--text-muted);">
-          Need to change email? <a href="#/signup" style="color: var(--brand-primary); font-weight: 600;">Sign up again</a>
+          Need to change email? <a href="#/signup" style="color: var(--accent); font-weight: 600;">Sign up again</a>
         </div>
       </div>
     </div>
@@ -180,7 +180,7 @@ function renderVerifyOTP(container) {
     const resendBtn = document.getElementById('btn-resend-otp');
     const errorDiv = document.getElementById('auth-error');
 
-    if (timerDisplay) timerDisplay.style.color = 'var(--brand-primary)';
+    if (timerDisplay) timerDisplay.style.color = 'var(--accent)';
 
     function updateDisplay() {
       if (!timerDisplay) return;
@@ -275,7 +275,7 @@ function renderForgotPassword(container) {
           <input type="email" id="forgot-email" class="form-input" required placeholder="user@example.com" />
         </div>
 
-        <div id="auth-error" style="color: var(--brand-primary); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
+        <div id="auth-error" style="color: var(--accent); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
         <div id="auth-success" style="color: var(--accent-emerald); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">Send Reset Code</button>
@@ -318,9 +318,9 @@ function renderResetPassword(container) {
       </p>
 
       <!-- 10-minute timer display -->
-      <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border-dark);">
+      <div id="otp-timer-wrapper" style="text-align: center; margin-bottom: 1.25rem; background-color: #0a0a0a; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border);">
         <div style="font-size: 0.75rem; color: var(--text-muted);">Reset OTP Expires In</div>
-        <div id="reset-otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); font-family: monospace; margin-top: 0.1rem;">10:00</div>
+        <div id="reset-otp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 0.1rem;">10:00</div>
       </div>
 
       <form id="form-reset">
@@ -339,7 +339,7 @@ function renderResetPassword(container) {
           <input type="password" id="reset-pass" class="form-input" required minlength="6" placeholder="At least 6 characters" />
         </div>
 
-        <div id="auth-error" style="color: var(--brand-primary); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
+        <div id="auth-error" style="color: var(--accent); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
         <div id="auth-success" style="color: var(--accent-emerald); font-size: 0.8125rem; margin-bottom: 1rem;" class="hidden"></div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">Reset Password</button>
@@ -348,7 +348,7 @@ function renderResetPassword(container) {
       <div style="margin-top: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
         <button id="btn-resend-reset-otp" class="btn btn-secondary btn-sm">Resend Reset OTP</button>
         <div style="font-size: 0.8125rem; color: var(--text-muted);">
-          <a href="#/login" style="color: var(--brand-primary); font-weight: 600;">Back to Login</a>
+          <a href="#/login" style="color: var(--accent); font-weight: 600;">Back to Login</a>
         </div>
       </div>
     </div>
@@ -363,7 +363,7 @@ function renderResetPassword(container) {
     const resendBtn = document.getElementById('btn-resend-reset-otp');
     const errorDiv = document.getElementById('auth-error');
 
-    if (timerDisplay) timerDisplay.style.color = 'var(--brand-primary)';
+    if (timerDisplay) timerDisplay.style.color = 'var(--accent)';
 
     function updateDisplay() {
       if (!timerDisplay) return;

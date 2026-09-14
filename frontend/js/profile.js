@@ -31,7 +31,7 @@ async function renderProfile(container) {
           <div><strong>Role:</strong> <span class="badge badge-confirmed">${profile.role || 'Customer'}</span></div>
         </div>
 
-        <hr style="border-color: var(--border-dark); margin: 1.5rem 0;" />
+        <hr style="border-color: var(--border); margin: 1.5rem 0;" />
 
         <h2 class="section-title">Favorite Genres</h2>
         <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem;">
@@ -74,7 +74,7 @@ async function renderProfile(container) {
     });
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load profile.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load profile.'}</div>`;
   }
 }
 

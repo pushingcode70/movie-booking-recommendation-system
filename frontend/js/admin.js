@@ -7,8 +7,8 @@ async function renderAdmin(container) {
   if (!API.getToken() || !user || (user.role !== 'admin' && user.role !== 'ADMIN')) {
     container.innerHTML = `
       <div class="card" style="text-align: center; padding: 3rem; max-width: 500px; margin: 2rem auto;">
-        <h1 style="color: var(--brand-primary); font-size: 1.5rem; font-weight: 800;">Access Denied</h1>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">You must be logged in as an Administrator to access this section.</p>
+        <h1 style="color: var(--accent); font-size: 1.5rem; font-weight: 800;">Access Denied</h1>
+        <p style="color: var(--muted); margin-top: 0.5rem;">You must be logged in as an Administrator to access this section.</p>
         <a href="#/" class="btn btn-secondary" style="margin-top: 1rem;">Return to Main Site</a>
       </div>
     `;
@@ -16,39 +16,41 @@ async function renderAdmin(container) {
   }
 
   container.innerHTML = `
-    <div class="admin-layout">
-      <!-- admin sidebar -->
-      <aside class="admin-sidebar">
-        <div class="admin-sidebar-brand" style="color: #ffffff;">Admin</div>
-        <a href="#/" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem; display: inline-block;">&larr; Back to Main Site</a>
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h1 class="page-title" style="margin-bottom: 0;">Admin Management</h1>
+        <a href="#/" class="btn btn-secondary btn-sm">&larr; Back to Main Site</a>
+      </div>
 
-        <div id="admin-tab-theatres" class="admin-nav-item ${currentAdminTab === 'theatres' ? 'active' : ''}">
+      <!-- compact top navigation tabs -->
+      <div class="admin-nav-bar">
+        <div id="admin-tab-theatres" class="admin-nav-tab ${currentAdminTab === 'theatres' ? 'active' : ''}">
           Theatres & Screens
         </div>
-        <div id="admin-tab-shows" class="admin-nav-item ${currentAdminTab === 'shows' ? 'active' : ''}">
+        <div id="admin-tab-shows" class="admin-nav-tab ${currentAdminTab === 'shows' ? 'active' : ''}">
           Shows
         </div>
-        <div id="admin-tab-bookings" class="admin-nav-item ${currentAdminTab === 'bookings' || currentAdminTab === 'payments' ? 'active' : ''}">
+        <div id="admin-tab-bookings" class="admin-nav-tab ${currentAdminTab === 'bookings' || currentAdminTab === 'payments' ? 'active' : ''}">
           Bookings & Payments
         </div>
-        <div id="admin-tab-dashboard" class="admin-nav-item ${currentAdminTab === 'dashboard' ? 'active' : ''}">
+        <div id="admin-tab-dashboard" class="admin-nav-tab ${currentAdminTab === 'dashboard' ? 'active' : ''}">
           Dashboard
         </div>
-      </aside>
+      </div>
 
-      <!-- admin main content area -->
-      <main id="admin-content-view" class="admin-content">
-        <div style="font-size: 0.8125rem; color: var(--text-muted);">Loading view...</div>
+      <!-- main content view -->
+      <main id="admin-content-view">
+        <div style="font-size: 0.8125rem; color: var(--muted);">Loading view...</div>
       </main>
     </div>
   `;
 
-  // attach sidebar click listeners
+  // attach tab click listeners
   ['theatres', 'shows', 'bookings', 'dashboard'].forEach(tab => {
     const el = document.getElementById(`admin-tab-${tab}`);
     if (el) {
       el.addEventListener('click', () => {
-        document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.admin-nav-tab').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
         currentAdminTab = tab;
         renderAdminTabContent(document.getElementById('admin-content-view'));
@@ -158,7 +160,7 @@ async function renderAdminTheatresView(viewEl) {
         const tScreens = allScreens.filter(s => s.theatre_id === t.id);
 
         return `
-          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.25rem;">
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; background-color: #121212; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem;">
             
             <div>
               <!-- card header -->
@@ -175,7 +177,7 @@ async function renderAdminTheatresView(viewEl) {
               </div>
 
               <!-- screens list section -->
-              <div style="background-color: #0a0a0a; border-radius: 8px; padding: 0.85rem; border: 1px solid var(--border-dark); margin-top: 1rem; margin-bottom: 1rem;">
+              <div style="background-color: #0a0a0a; border-radius: 8px; padding: 0.85rem; border: 1px solid var(--border); margin-top: 1rem; margin-bottom: 1rem;">
                 <div style="font-size: 0.78rem; font-weight: 700; color: #e5e5e5; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
                   <span>Screens (${tScreens.length})</span>
                 </div>
@@ -199,7 +201,7 @@ async function renderAdminTheatresView(viewEl) {
 
                 <!-- inline add screen toggle -->
                 <details style="margin-top: 0.75rem; font-size: 0.75rem;">
-                  <summary style="cursor: pointer; color: var(--brand-primary); font-weight: 600;">+ Add Screen</summary>
+                  <summary style="cursor: pointer; color: var(--accent); font-weight: 600;">+ Add Screen</summary>
                   <form class="form-add-screen-inline" data-theatre-id="${t.id}" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; background-color: #1a1a1a; padding: 0.6rem; border-radius: 6px;">
                     <input type="number" class="form-input input-screen-number" required min="1" placeholder="Screen Number (e.g. 1)" style="font-size: 0.75rem; padding: 0.35rem 0.5rem;" />
                     <input type="number" class="form-input input-screen-seats" required min="1" placeholder="Total Seats (e.g. 60)" style="font-size: 0.75rem; padding: 0.35rem 0.5rem;" />
@@ -233,7 +235,7 @@ async function renderAdminTheatresView(viewEl) {
     allScreens = (await API.get('/screens')) || [];
     renderTheatresList();
   } catch (err) {
-    gridEl.innerHTML = `<div class="card" style="color: var(--brand-primary); grid-column: 1/-1;">${err.message || 'Failed to load theatres.'}</div>`;
+    gridEl.innerHTML = `<div class="card" style="color: var(--accent); grid-column: 1/-1;">${err.message || 'Failed to load theatres.'}</div>`;
   }
 
   // live search filter listener
@@ -344,7 +346,7 @@ async function renderAdminShowsView(viewEl) {
             
             <!-- selected movie preview display -->
             <div id="sh-selected-movie-card" style="display: none; background-color: #0a0a0a; border: 1px solid var(--accent-emerald); border-radius: 8px; padding: 0.75rem; align-items: center; gap: 1rem;">
-              <img id="sh-selected-poster" src="" alt="Poster" style="width: 45px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-dark);" />
+              <img id="sh-selected-poster" src="" alt="Poster" style="width: 45px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);" />
               <div style="flex: 1;">
                 <div id="sh-selected-title" style="font-size: 0.9rem; font-weight: 800; color: #ffffff;">Movie Title</div>
                 <div id="sh-selected-sub" style="font-size: 0.75rem; color: var(--accent-emerald);">Published Local ID: #1 • 120 mins</div>
@@ -360,7 +362,7 @@ async function renderAdminShowsView(viewEl) {
               </div>
 
               <!-- dropdown search results box -->
-              <div id="sh-movie-results" style="display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 100; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 8px; max-height: 300px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.9); margin-top: 4px;">
+              <div id="sh-movie-results" style="display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 100; background-color: #121212; border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.9); margin-top: 4px;">
               </div>
             </div>
           </div>
@@ -461,7 +463,7 @@ async function renderAdminShowsView(viewEl) {
             ? (m.poster_path.startsWith('http') ? m.poster_path : `https://image.tmdb.org/t/p/w500${m.poster_path}`)
             : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1000';
           return `
-            <div class="sh-movie-item" data-type="local" data-id="${m.id}" style="display: flex; gap: 0.75rem; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border-dark); cursor: pointer; align-items: center;">
+            <div class="sh-movie-item" data-type="local" data-id="${m.id}" style="display: flex; gap: 0.75rem; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); cursor: pointer; align-items: center;">
               <img src="${poster}" style="width: 32px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px;" />
               <div>
                 <div style="font-size: 0.84rem; font-weight: 700; color: #ffffff;">${m.title}</div>
@@ -474,7 +476,7 @@ async function renderAdminShowsView(viewEl) {
 
       // tmdb api catalog results section
       if (tmdbResults.length > 0) {
-        html += `<div style="font-size: 0.72rem; font-weight: 700; color: var(--brand-primary); padding: 0.4rem 0.8rem; background-color: #0a0a0a;">TMDB API CATALOG (CLICK TO IMPORT)</div>`;
+        html += `<div style="font-size: 0.72rem; font-weight: 700; color: var(--accent); padding: 0.4rem 0.8rem; background-color: #0a0a0a;">TMDB API CATALOG (CLICK TO IMPORT)</div>`;
         html += tmdbResults.slice(0, 8).map(m => {
           const poster = m.poster_path
             ? (m.poster_path.startsWith('http') ? m.poster_path : `https://image.tmdb.org/t/p/w500${m.poster_path}`)
@@ -482,7 +484,7 @@ async function renderAdminShowsView(viewEl) {
           const title = m.title || m.name || 'Untitled';
           const year = m.release_date ? m.release_date.split('-')[0] : '';
           return `
-            <div class="sh-movie-item" data-type="tmdb" data-tmdb-id="${m.id}" style="display: flex; gap: 0.75rem; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border-dark); cursor: pointer; align-items: center;">
+            <div class="sh-movie-item" data-type="tmdb" data-tmdb-id="${m.id}" style="display: flex; gap: 0.75rem; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); cursor: pointer; align-items: center;">
               <img src="${poster}" style="width: 32px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px;" />
               <div>
                 <div style="font-size: 0.84rem; font-weight: 700; color: #ffffff;">${title}</div>
@@ -501,7 +503,7 @@ async function renderAdminShowsView(viewEl) {
       resultsBox.style.display = 'block';
 
     } catch (err) {
-      resultsBox.innerHTML = `<div style="padding: 0.8rem; font-size: 0.8125rem; color: var(--brand-primary);">${err.message || 'Search failed.'}</div>`;
+      resultsBox.innerHTML = `<div style="padding: 0.8rem; font-size: 0.8125rem; color: var(--accent);">${err.message || 'Search failed.'}</div>`;
     }
   }
 
@@ -667,7 +669,7 @@ async function renderAdminShowsView(viewEl) {
       showsListEl.innerHTML = '<div class="card" style="text-align: center; color: var(--text-muted); padding: 2rem;">No scheduled shows found.</div>';
     }
   } catch (err) {
-    showsListEl.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load shows.'}</div>`;
+    showsListEl.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load shows.'}</div>`;
   }
 }
 
@@ -822,7 +824,7 @@ async function renderAdminBookingsView(viewEl) {
     });
 
   } catch (err) {
-    document.getElementById('admin-tx-list').innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load bookings.'}</div>`;
+    document.getElementById('admin-tx-list').innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load bookings.'}</div>`;
   }
 }
 
@@ -857,7 +859,7 @@ async function renderAdminDashboardView(viewEl) {
       </div>
     `;
   } catch (err) {
-    viewEl.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load stats.'}</div>`;
+    viewEl.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load stats.'}</div>`;
   }
 }
 

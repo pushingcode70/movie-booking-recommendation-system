@@ -159,8 +159,9 @@ const Router = {
     const isAdmin = user && (user.role === 'admin' || user.role === 'ADMIN');
 
     let html = `
-      <a href="#/" class="${currentHash === '#/' ? 'active-red' : ''}">Home</a>
-      <a href="#/shows" class="${currentHash.startsWith('#/shows') || currentHash.startsWith('#/theatres') ? 'active' : ''}">Shows</a>
+      <a href="#/" class="${currentHash === '#/' || currentHash === '#/movies' ? 'active-red' : ''}">Movies</a>
+      <a href="#/shows" class="${currentHash.startsWith('#/shows') || currentHash.startsWith('#/theatres') ? 'active' : ''}">Theatres</a>
+      <a href="#/recommendations" class="${currentHash === '#/recommendations' ? 'active' : ''}">Recommendations</a>
     `;
 
     if (isLoggedIn) {
@@ -172,10 +173,10 @@ const Router = {
       `;
 
       if (isAdmin) {
-        html += `<a href="#/admin" class="${currentHash.startsWith('#/admin') ? 'active-red' : ''}" style="color: var(--brand-primary); font-weight: 800;">Admin</a>`;
+        html += `<a href="#/admin" class="${currentHash.startsWith('#/admin') ? 'active-red' : ''}" style="color: var(--accent); font-weight: 700;">Admin</a>`;
       }
 
-      html += `<button id="btn-logout" class="btn btn-secondary btn-sm" style="margin-left: 0.5rem;">Logout</button>`;
+      html += `<button id="btn-logout" class="btn btn-secondary btn-sm" style="margin-left: 0.25rem;">Logout</button>`;
     } else {
       html += `
         <a href="#/login" class="btn-nav-accent">Login</a>
@@ -195,3 +196,4 @@ const Router = {
 };
 
 Router.init();
+

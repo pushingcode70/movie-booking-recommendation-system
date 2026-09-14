@@ -24,7 +24,7 @@ async function renderTheatres(container, params) {
             ${theatres.map(t => {
               const tScreens = screens.filter(s => s.theatre_id === t.id);
               return `
-                <div class="card theatre-card-item" data-id="${t.id}" style="display: flex; flex-direction: column; justify-content: space-between; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: transform 0.2s, border-color 0.2s;">
+                <div class="card theatre-card-item" data-id="${t.id}" style="display: flex; flex-direction: column; justify-content: space-between; background-color: #121212; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: transform 0.2s, border-color 0.2s;">
                   <div>
                     <h2 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin-bottom: 0.35rem;">${t.name}</h2>
                     <div style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem;">📍 ${t.location || 'Location not specified'}</div>
@@ -32,7 +32,7 @@ async function renderTheatres(container, params) {
                       ${tScreens.length} Screen(s) Available
                     </div>
                   </div>
-                  <div style="margin-top: 1.25rem; font-size: 0.8125rem; color: var(--brand-primary); font-weight: 700;">
+                  <div style="margin-top: 1.25rem; font-size: 0.8125rem; color: var(--accent); font-weight: 700;">
                     View Shows &rarr;
                   </div>
                 </div>
@@ -56,7 +56,7 @@ async function renderTheatres(container, params) {
     });
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load theatres.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load theatres.'}</div>`;
   }
 }
 
@@ -152,7 +152,7 @@ async function renderTheatreShowtimes(container, theatreId) {
                 <button class="date-pill-btn ${d.fullDate === selectedDate ? 'active-red-pill' : ''}" data-date="${d.fullDate}" style="
                   background-color: ${d.fullDate === selectedDate ? '#ef4444' : '#161616'};
                   color: #ffffff;
-                  border: 1px solid ${d.fullDate === selectedDate ? '#ef4444' : 'var(--border-dark)'};
+                  border: 1px solid ${d.fullDate === selectedDate ? '#ef4444' : 'var(--border)'};
                   border-radius: 10px;
                   padding: 0.6rem 1.25rem;
                   display: flex;
@@ -188,9 +188,9 @@ async function renderTheatreShowtimes(container, theatreId) {
                 : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1000';
 
               return `
-                <div class="card" style="display: flex; gap: 1.5rem; background-color: #121212; border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.25rem; flex-wrap: wrap;">
+                <div class="card" style="display: flex; gap: 1.5rem; background-color: #121212; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; flex-wrap: wrap;">
                   <!-- Movie Poster -->
-                  <img src="${poster}" alt="${movie.title}" style="width: 100px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-dark);" />
+                  <img src="${poster}" alt="${movie.title}" style="width: 100px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);" />
 
                   <!-- Movie Info & Showtimes -->
                   <div style="flex: 1; min-width: 250px;">
@@ -231,7 +231,7 @@ async function renderTheatreShowtimes(container, theatreId) {
                 </div>
               `;
             }).join('') : `
-              <div class="card" style="text-align: center; padding: 3rem; color: var(--text-muted); background-color: #121212; border: 1px dashed var(--border-dark); border-radius: 12px;">
+              <div class="card" style="text-align: center; padding: 3rem; color: var(--text-muted); background-color: #121212; border: 1px dashed var(--border); border-radius: 12px;">
                 No showtimes scheduled for this theatre on ${selectedDate}.
               </div>
             `}
@@ -252,7 +252,7 @@ async function renderTheatreShowtimes(container, theatreId) {
     renderShowtimesView();
 
   } catch (err) {
-    container.innerHTML = `<div class="card" style="color: var(--brand-primary);">${err.message || 'Failed to load theatre showtimes.'}</div>`;
+    container.innerHTML = `<div class="card" style="color: var(--accent);">${err.message || 'Failed to load theatre showtimes.'}</div>`;
   }
 }
 
